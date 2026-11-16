@@ -480,7 +480,6 @@ export const projects: Project[] = [
     status: "Concept",
     summary:
       "AR-based operator guidance and industrial safety training concepts using AR glasses and AI-assisted compliance.",
-    notes: ["Supported devices, client names and deployment outcomes are not documented."],
     tags: ["immersive", "ai-software"],
     primary: "immersive",
     visual: "ar",

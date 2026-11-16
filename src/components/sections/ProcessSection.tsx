@@ -3,6 +3,9 @@
 import { useRef } from "react";
 import { processNote, processSteps } from "@/content/company";
 import { gsap, useGSAP } from "@/lib/gsap";
+import { arrival, coverDepth, processTopIndex, UNITS } from "@/lib/motion/processDeck";
+import { RevealHeading } from "@/components/motion/RevealHeading";
+import { surfaceAttrs } from "@/lib/surfaces";
 
 const ICONS: Record<string, React.ReactNode> = {
   understand: (
@@ -51,41 +54,62 @@ export function ProcessSection() {
   useGSAP(
     () => {
       const mm = gsap.matchMedia();
+      // Desktop deck on deck time t = progress × UNITS(n) (design L.1–L.4).
       mm.add("(prefers-reduced-motion: no-preference) and (min-width: 900px)", () => {
         const cards = gsap.utils.toArray<HTMLElement>(".process__card", root.current);
+        const dims = cards.map((c) => c.querySelector<HTMLElement>(".process__card-dim"));
         const steps = gsap.utils.toArray<HTMLElement>(".process__step", root.current);
-        let current = -1;
-        const tl = gsap.timeline({
-          defaults: { ease: "none" },
-          scrollTrigger: {
-            trigger: ".process__track",
-            start: "top top",
-            end: "bottom bottom",
-            scrub: 0.7,
-            onUpdate: (self) => {
-              const idx = Math.min(cards.length - 1, Math.floor(self.progress * cards.length * 0.999));
-              if (idx !== current) {
-                current = idx;
-                steps.forEach((s, i) => s.classList.toggle("is-active", i === idx));
-                cards.forEach((c, i) => c.setAttribute("aria-hidden", String(i > idx)));
-              }
-            },
-          },
-        });
-        tl.fromTo(".process__bigline", { xPercent: 0 }, { xPercent: -45, duration: 1 }, 0);
-        cards.forEach((card, i) => {
-          if (i === 0) return;
-          const at = (i - 1) / (cards.length - 1);
-          tl.fromTo(card, { yPercent: 115, rotation: 3 }, { yPercent: 0, rotation: 0, duration: 0.18, ease: "power2.out" }, at);
-          for (let j = 0; j < i; j++) {
-            const depth = i - j;
-            tl.to(
-              cards[j],
-              { y: -28 * depth, scale: 1 - 0.05 * depth, filter: `brightness(${1 - 0.18 * depth})`, duration: 0.18, ease: "power2.out" },
-              at,
-            );
+        const bigline = root.current!.querySelector<HTMLElement>(".process__bigline");
+        const n = cards.length;
+        const total = UNITS(n);
+        const pose = cards.map((c) => gsap.quickSetter(c, "css") as (v: gsap.TweenVars) => void);
+        const dimSet = dims.map((d) => (d ? (gsap.quickSetter(d, "opacity") as (v: number) => void) : null));
+        const lineSet = bigline ? (gsap.quickSetter(bigline, "xPercent") as (v: number) => void) : null;
+        // CSS parks cards 02–05 with translateY(108%); GSAP would parse that as a fixed y in px and add
+        // yPercent on top, leaving them below the clip. Zero x/y so only yPercent positions the cards.
+        gsap.set(cards, { x: 0, y: 0, transformPerspective: 1400, transformOrigin: "50% 0%" });
+
+        let top = -1;
+        const apply = (t: number) => {
+          for (let i = 0; i < n; i++) {
+            const a = arrival(i, t);
+            const depth = coverDepth(i, t, n);
+            const blur = (1 - a) ** 2 * 12 + depth * 1.1;
+            pose[i]({
+              yPercent: (1 - a) * 108 - depth * 5,
+              rotationX: -(1 - a) * 30 + depth * 5,
+              scale: 0.9 + 0.1 * a - 0.05 * depth,
+              filter: blur > 0.05 ? `blur(${blur.toFixed(2)}px)` : "none",
+            });
+            dimSet[i]?.(Math.min(0.6, depth * 0.2));
           }
-        });
+          lineSet?.((-45 * t) / total);
+          const nextTop = processTopIndex(t, n);
+          if (nextTop !== top) {
+            top = nextTop;
+            steps.forEach((s, i) => s.classList.toggle("is-active", i === top));
+            cards.forEach((c, i) => {
+              const hidden = i > top;
+              c.setAttribute("aria-hidden", String(hidden));
+              c.inert = hidden;
+            });
+          }
+        };
+
+        const deck = { t: 0 };
+        gsap.timeline({
+          scrollTrigger: { trigger: ".process__track", start: "top top", end: "bottom bottom", scrub: true },
+        }).to(deck, { t: total, duration: total, ease: "none", onUpdate: () => apply(deck.t) });
+        apply(0);
+
+        return () => {
+          steps.forEach((s, i) => s.classList.toggle("is-active", i === 0));
+          cards.forEach((c) => {
+            c.removeAttribute("aria-hidden");
+            c.inert = false;
+          });
+          gsap.set([...cards, ...dims.filter(Boolean), bigline].filter(Boolean), { clearProps: "all" });
+        };
       });
       return () => mm.revert();
     },
@@ -93,7 +117,7 @@ export function ProcessSection() {
   );
 
   return (
-    <section ref={root} className="process" data-theme="dark" aria-labelledby="process-title">
+    <section ref={root} className="process" {...surfaceAttrs("ink")} aria-labelledby="process-title">
       <div className="process__track">
         <div className="process__stage">
           <div className="process__bigline" aria-hidden="true">
@@ -102,9 +126,7 @@ export function ProcessSection() {
           <div className="container process__inner">
             <div className="process__head">
               <p className="t-utility">How we engineer</p>
-              <h2 id="process-title" className="t-display process__title">
-                From complex problem to working system.
-              </h2>
+              <RevealHeading id="process-title" className="t-display process__title" text="From complex problem to working system." />
               <ol className="process__steps" aria-label="Process stages">
                 {processSteps.map((s, i) => (
                   <li key={s.key} className={`process__step${i === 0 ? " is-active" : ""}`}>
@@ -116,7 +138,7 @@ export function ProcessSection() {
             </div>
             <ol className="process__cards">
               {processSteps.map((s, i) => (
-                <li key={s.key} className="process__card" style={{ zIndex: i + 1 }}>
+                <li key={s.key} className="process__card" style={{ zIndex: i + 1, "--i": i } as React.CSSProperties}>
                   <div className="process__card-top">
                     <span className="process__card-index">{s.index}</span>
                     <svg viewBox="0 0 64 64" className="process__icon" aria-hidden="true">
@@ -125,6 +147,7 @@ export function ProcessSection() {
                   </div>
                   <h3 className="t-h3">{s.title}</h3>
                   <p>{s.body}</p>
+                  <span className="process__card-dim" aria-hidden="true" />
                 </li>
               ))}
             </ol>

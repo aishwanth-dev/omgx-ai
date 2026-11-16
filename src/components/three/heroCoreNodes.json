@@ -1,0 +1,11 @@
+{
+  "core": "Core",
+  "rings": ["Ring_Inner", "Ring_Mid", "Ring_Outer"],
+  "ribbon": "Ribbon",
+  "nodes": [
+    "Node_00", "Node_01", "Node_02", "Node_03", "Node_04", "Node_05",
+    "Node_06", "Node_07", "Node_08", "Node_09", "Node_10", "Node_11"
+  ],
+  "traces": ["Trace_Inner", "Trace_Mid", "Trace_Outer"],
+  "paths": ["Path_00", "Path_01", "Path_02", "Path_03"]
+}

@@ -1,0 +1,391 @@
+/* Digital sketches (digital.tsx): ar, platform, research, agent and the
+   init-* initiative drawings. Loops run only while the svg has data-run="1";
+   only transform, opacity and stroke-dashoffset animate. */
+
+/* ---------- base states ---------- */
+
+.sketch:is(.sketch--ar, .sketch--platform, .sketch--research, .sketch--agent, [class*="sketch--init-"]) .dg-s {
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.sketch:is(.sketch--ar, .sketch--platform, .sketch--research, .sketch--agent, [class*="sketch--init-"]) .dg-w,
+.sketch.sketch--init-fruit-brain .fb-traj {
+  vector-effect: none;
+  stroke-width: 1.05;
+  stroke-dasharray: 1 1;
+  stroke-dashoffset: 1;
+}
+
+.sketch:is(.sketch--ar, .sketch--platform, .sketch--research, .sketch--agent, [class*="sketch--init-"]) .dg-zip {
+  fill: none;
+  stroke: var(--sk-blue);
+  stroke-width: 1.9;
+  stroke-linecap: round;
+  stroke-dasharray: 0.2 1.3;
+  stroke-dashoffset: 0.2;
+  opacity: 0;
+}
+
+.sketch:is(.sketch--ar, .sketch--platform, .sketch--research, .sketch--agent, [class*="sketch--init-"]) .dg-zip--red {
+  stroke: var(--sk-red);
+}
+
+.sketch:is(.sketch--ar, .sketch--platform, .sketch--research, .sketch--agent, [class*="sketch--init-"]) .dg-blip {
+  fill: var(--sk-blue);
+  stroke: none;
+  opacity: 0;
+}
+
+.sketch:is(.sketch--ar, .sketch--platform, .sketch--research, .sketch--agent, [class*="sketch--init-"]) .dg-blip--red {
+  fill: var(--sk-red);
+}
+
+.sketch:is(.sketch--ar, .sketch--platform, .sketch--research, .sketch--agent, [class*="sketch--init-"]) .dg-blip--soft {
+  fill-opacity: 0.35;
+}
+
+.sketch:is(.sketch--ar, .sketch--platform, .sketch--research, .sketch--agent, [class*="sketch--init-"]) .dg-lit {
+  fill: var(--sk-blue);
+  fill-opacity: 0.16;
+  stroke: none;
+  opacity: 0;
+}
+
+.sketch:is(.sketch--ar, .sketch--platform, .sketch--research, .sketch--agent, [class*="sketch--init-"]) .dg-lit--red {
+  fill: var(--sk-red);
+}
+
+.sketch:is(.sketch--ar, .sketch--platform, .sketch--research, .sketch--agent, [class*="sketch--init-"]) .dg-lit--strong {
+  fill-opacity: 0.55;
+}
+
+.sketch:is(.sketch--ar, .sketch--platform, .sketch--research, .sketch--agent, [class*="sketch--init-"]) .dg-fill {
+  fill: var(--sk-blue);
+  fill-opacity: 0.14;
+  stroke: none;
+}
+
+.sketch:is(.sketch--ar, .sketch--platform, .sketch--research, .sketch--agent, [class*="sketch--init-"]) .dg-cur {
+  fill: currentColor;
+  fill-opacity: 0.7;
+  stroke: none;
+}
+
+.sketch:is(.sketch--ar, .sketch--platform, .sketch--research, .sketch--agent, [class*="sketch--init-"]) .dg-trk {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.sketch:is(.sketch--ar, .sketch--platform, .sketch--research, .sketch--agent, [class*="sketch--init-"]) .dg-label {
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  fill: currentColor;
+  fill-opacity: 0.8;
+  stroke: none;
+}
+
+.sketch:is(.sketch--ar, .sketch--platform, .sketch--research, .sketch--agent, [class*="sketch--init-"]) .dg-label--red {
+  fill: var(--sk-red);
+  fill-opacity: 1;
+}
+
+.sketch--init-bona-ai .bn-lead,
+.sketch--init-bona-ai .bn-tick,
+.sketch--init-bizigpt .bz-typing,
+.sketch--init-jev-vision-integration .jv-scan,
+.sketch--init-binwin-ai-applications .bw-scan,
+.sketch--init-mallika-ai-receptionist .ml-cur,
+.sketch--init-omgx-app .ox-ring,
+.sketch--init-omg-now .on-ring,
+.sketch--init-fruit-brain .fb-sweep {
+  opacity: 0;
+}
+
+.sketch--init-binwin-ai-applications .bw-bar {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+}
+
+.sketch--init-pitwall .pw-fill {
+  transform-box: fill-box;
+  transform-origin: 0 50%;
+}
+
+.sketch--init-omgx-app .ox-eq,
+.sketch--init-omgx-app .ox-ring,
+.sketch--init-omg-now .on-ring {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+/* ---------- loops (shared) ---------- */
+
+.sketch[data-run="1"]:is(.sketch--ar, .sketch--platform, .sketch--research, .sketch--agent, [class*="sketch--init-"]) .dg-s {
+  animation: dg-s0 var(--cyc) ease-out calc(var(--loop) + var(--l, 0s)) infinite both;
+}
+.sketch[data-run="1"]:is(.sketch--ar, .sketch--platform, .sketch--research, .sketch--agent, [class*="sketch--init-"]) .dg-s1 { animation-name: dg-s1; }
+.sketch[data-run="1"]:is(.sketch--ar, .sketch--platform, .sketch--research, .sketch--agent, [class*="sketch--init-"]) .dg-s2 { animation-name: dg-s2; }
+.sketch[data-run="1"]:is(.sketch--ar, .sketch--platform, .sketch--research, .sketch--agent, [class*="sketch--init-"]) .dg-s3 { animation-name: dg-s3; }
+.sketch[data-run="1"]:is(.sketch--ar, .sketch--platform, .sketch--research, .sketch--agent, [class*="sketch--init-"]) .dg-s4 { animation-name: dg-s4; }
+.sketch[data-run="1"]:is(.sketch--ar, .sketch--platform, .sketch--research, .sketch--agent, [class*="sketch--init-"]) .dg-s5 { animation-name: dg-s5; }
+.sketch[data-run="1"]:is(.sketch--ar, .sketch--platform, .sketch--research, .sketch--agent, [class*="sketch--init-"]) .dg-s6 { animation-name: dg-s6; }
+.sketch[data-run="1"]:is(.sketch--ar, .sketch--platform, .sketch--research, .sketch--agent, [class*="sketch--init-"]) .dg-s7 { animation-name: dg-s7; }
+
+.sketch[data-run="1"]:is(.sketch--ar, .sketch--platform, .sketch--research, .sketch--agent, [class*="sketch--init-"]) .dg-w {
+  animation: dg-w0 var(--cyc) ease-in-out calc(var(--loop) + var(--l, 0s)) infinite both;
+}
+.sketch[data-run="1"]:is(.sketch--ar, .sketch--platform, .sketch--research, .sketch--agent, [class*="sketch--init-"]) .dg-w1 { animation-name: dg-w1; }
+.sketch[data-run="1"]:is(.sketch--ar, .sketch--platform, .sketch--research, .sketch--agent, [class*="sketch--init-"]) .dg-w2 { animation-name: dg-w2; }
+.sketch[data-run="1"]:is(.sketch--ar, .sketch--platform, .sketch--research, .sketch--agent, [class*="sketch--init-"]) .dg-w3 { animation-name: dg-w3; }
+.sketch[data-run="1"]:is(.sketch--ar, .sketch--platform, .sketch--research, .sketch--agent, [class*="sketch--init-"]) .dg-w4 { animation-name: dg-w4; }
+.sketch[data-run="1"]:is(.sketch--ar, .sketch--platform, .sketch--research, .sketch--agent, [class*="sketch--init-"]) .dg-w5 { animation-name: dg-w5; }
+
+.sketch[data-run="1"]:is(.sketch--ar, .sketch--platform, .sketch--research, .sketch--agent, [class*="sketch--init-"]) .dg-zip {
+  animation: dg-zip var(--cyc) linear calc(var(--loop) + var(--l, 0s)) infinite both;
+}
+
+.sketch[data-run="1"]:is(.sketch--ar, .sketch--platform, .sketch--research, .sketch--agent, [class*="sketch--init-"]) .dg-blip {
+  animation: dg-blip var(--cyc) ease-out calc(var(--loop) + var(--l, 0s)) infinite both;
+}
+
+.sketch[data-run="1"]:is(.sketch--ar, .sketch--platform, .sketch--research, .sketch--agent, [class*="sketch--init-"]) .dg-blip--q {
+  animation-duration: calc(var(--cyc) / 4);
+}
+
+.sketch[data-run="1"]:is(.sketch--ar, .sketch--platform, .sketch--research, .sketch--agent, [class*="sketch--init-"]) .dg-lit {
+  animation: dg-lit var(--cyc) ease calc(var(--loop) + var(--l, 0s)) infinite both;
+}
+
+.sketch[data-run="1"]:is(.sketch--ar, .sketch--platform, .sketch--research, .sketch--agent, [class*="sketch--init-"]) .dg-spin {
+  animation: dg-spin var(--cyc) linear calc(var(--loop) + var(--l, 0s)) infinite both;
+}
+
+.sketch[data-run="1"]:is(.sketch--ar, .sketch--platform, .sketch--research, .sketch--agent, [class*="sketch--init-"]) .dg-spin--q {
+  animation-duration: calc(var(--cyc) / 4);
+}
+
+.sketch[data-run="1"]:is(.sketch--ar, .sketch--platform, .sketch--research, .sketch--agent, [class*="sketch--init-"]) .dg-trk {
+  animation: dg-trk calc(var(--cyc) / 3) ease-in-out calc(var(--loop) + var(--l, 0s)) infinite both;
+}
+
+.sketch[data-run="1"]:is(.sketch--ar, .sketch--platform, .sketch--research, .sketch--agent, [class*="sketch--init-"]) .dg-blink {
+  animation: dg-blink calc(var(--cyc) / 5) steps(1) calc(var(--loop) + var(--l, 0s)) infinite both;
+}
+
+/* ---------- loops (kind-specific) ---------- */
+
+.sketch--ar.sketch[data-run="1"] .ar-nudge {
+  transform-origin: 321px 147px;
+  animation: ar-nudge calc(var(--cyc) / 3) ease-in-out calc(var(--loop) + var(--l, 0s)) infinite both;
+}
+
+.sketch--init-bona-ai.sketch[data-run="1"] .bn-lead {
+  animation: bn-lead var(--cyc) ease-in-out calc(var(--loop) + var(--l, 0s)) infinite both;
+}
+
+.sketch--init-bona-ai.sketch[data-run="1"] .bn-tick {
+  animation: bn-tick var(--cyc) ease-out calc(var(--loop) + var(--l, 0s)) infinite both;
+}
+
+.sketch--init-bizigpt.sketch[data-run="1"] .bz-typing {
+  animation: bz-typing var(--cyc) linear calc(var(--loop) + var(--l, 0s)) infinite both;
+}
+
+.sketch--init-jev-vision-integration.sketch[data-run="1"] .jv-scan {
+  animation: jv-scan var(--cyc) linear calc(var(--loop) + var(--l, 0s)) infinite both;
+}
+
+.sketch--init-binwin-ai-applications.sketch[data-run="1"] .bw-scan {
+  animation: bw-scan var(--cyc) ease-in-out calc(var(--loop) + var(--l, 0s)) infinite both;
+}
+
+.sketch--init-binwin-ai-applications.sketch[data-run="1"] .bw-bar {
+  animation: bw-bar var(--cyc) ease-out calc(var(--loop) + var(--l, 0s)) infinite both;
+}
+
+.sketch--init-pitwall.sketch[data-run="1"] .pw-fill {
+  animation: pw-fill var(--cyc) ease-out calc(var(--loop) + var(--l, 0s)) infinite both;
+}
+
+.sketch--init-omgx-app.sketch[data-run="1"] .ox-eq {
+  animation: ox-eq calc(var(--cyc) / 6) ease-in-out calc(var(--loop) + var(--l, 0s)) infinite alternate both;
+}
+
+.sketch--init-omgx-app.sketch[data-run="1"] .ox-ring,
+.sketch--init-omg-now.sketch[data-run="1"] .on-ring {
+  animation: dg-ripple calc(var(--cyc) / 3) ease-out calc(var(--loop) + var(--l, 0s)) infinite both;
+}
+
+.sketch--init-omg-now.sketch[data-run="1"] .on-ring {
+  animation-duration: var(--cyc);
+}
+
+.sketch--init-mallika-ai-receptionist.sketch[data-run="1"] .ml-cur {
+  animation: ml-cur var(--cyc) ease-in-out calc(var(--loop) + var(--l, 0s)) infinite both;
+}
+
+.sketch--init-fruit-brain.sketch[data-run="1"] .fb-sweep {
+  animation: fb-sweep var(--cyc) linear calc(var(--loop) + var(--l, 0s)) infinite both;
+}
+
+.sketch--init-fruit-brain.sketch[data-run="1"] .fb-traj {
+  animation: fb-traj var(--cyc) ease-out calc(var(--loop) + var(--l, 0s)) infinite both;
+}
+
+/* ---------- keyframes ---------- */
+
+@keyframes dg-s0 { 0% { opacity: 0; transform: scale(1.18); } 3% { opacity: 1; transform: scale(1); } 86% { opacity: 1; } 92%, 100% { opacity: 0; } }
+@keyframes dg-s1 { 0%, 8% { opacity: 0; transform: scale(1.18); } 11% { opacity: 1; transform: scale(1); } 86% { opacity: 1; } 92%, 100% { opacity: 0; } }
+@keyframes dg-s2 { 0%, 16% { opacity: 0; transform: scale(1.18); } 19% { opacity: 1; transform: scale(1); } 86% { opacity: 1; } 92%, 100% { opacity: 0; } }
+@keyframes dg-s3 { 0%, 24% { opacity: 0; transform: scale(1.18); } 27% { opacity: 1; transform: scale(1); } 86% { opacity: 1; } 92%, 100% { opacity: 0; } }
+@keyframes dg-s4 { 0%, 32% { opacity: 0; transform: scale(1.18); } 35% { opacity: 1; transform: scale(1); } 86% { opacity: 1; } 92%, 100% { opacity: 0; } }
+@keyframes dg-s5 { 0%, 40% { opacity: 0; transform: scale(1.18); } 43% { opacity: 1; transform: scale(1); } 86% { opacity: 1; } 92%, 100% { opacity: 0; } }
+@keyframes dg-s6 { 0%, 48% { opacity: 0; transform: scale(1.18); } 51% { opacity: 1; transform: scale(1); } 86% { opacity: 1; } 92%, 100% { opacity: 0; } }
+@keyframes dg-s7 { 0%, 56% { opacity: 0; transform: scale(1.18); } 59% { opacity: 1; transform: scale(1); } 86% { opacity: 1; } 92%, 100% { opacity: 0; } }
+
+@keyframes dg-w0 { 0% { stroke-dashoffset: 1; opacity: 1; } 12% { stroke-dashoffset: 0; } 86% { stroke-dashoffset: 0; opacity: 1; } 92%, 100% { stroke-dashoffset: 0; opacity: 0; } }
+@keyframes dg-w1 { 0%, 8% { stroke-dashoffset: 1; opacity: 1; } 20% { stroke-dashoffset: 0; } 86% { stroke-dashoffset: 0; opacity: 1; } 92%, 100% { stroke-dashoffset: 0; opacity: 0; } }
+@keyframes dg-w2 { 0%, 16% { stroke-dashoffset: 1; opacity: 1; } 28% { stroke-dashoffset: 0; } 86% { stroke-dashoffset: 0; opacity: 1; } 92%, 100% { stroke-dashoffset: 0; opacity: 0; } }
+@keyframes dg-w3 { 0%, 24% { stroke-dashoffset: 1; opacity: 1; } 36% { stroke-dashoffset: 0; } 86% { stroke-dashoffset: 0; opacity: 1; } 92%, 100% { stroke-dashoffset: 0; opacity: 0; } }
+@keyframes dg-w4 { 0%, 32% { stroke-dashoffset: 1; opacity: 1; } 44% { stroke-dashoffset: 0; } 86% { stroke-dashoffset: 0; opacity: 1; } 92%, 100% { stroke-dashoffset: 0; opacity: 0; } }
+@keyframes dg-w5 { 0%, 40% { stroke-dashoffset: 1; opacity: 1; } 52% { stroke-dashoffset: 0; } 86% { stroke-dashoffset: 0; opacity: 1; } 92%, 100% { stroke-dashoffset: 0; opacity: 0; } }
+
+@keyframes dg-zip {
+  0% { stroke-dashoffset: 0.2; opacity: 0; }
+  1% { opacity: 1; }
+  9% { stroke-dashoffset: -1; opacity: 1; }
+  9.1%, 100% { stroke-dashoffset: -1; opacity: 0; }
+}
+
+@keyframes dg-blip {
+  0% { opacity: 0; }
+  2% { opacity: 1; }
+  12%, 100% { opacity: 0; }
+}
+
+@keyframes dg-lit {
+  0% { opacity: 0; }
+  4%, 20% { opacity: 1; }
+  30%, 100% { opacity: 0; }
+}
+
+@keyframes dg-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes dg-trk {
+  0%, 100% { opacity: 0.55; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.12); }
+}
+
+@keyframes dg-blink {
+  0% { opacity: 1; }
+  50% { opacity: 0.15; }
+}
+
+@keyframes dg-ripple {
+  0% { opacity: 0; transform: scale(0.6); }
+  8% { opacity: 0.8; }
+  60%, 100% { opacity: 0; transform: scale(1.7); }
+}
+
+@keyframes ar-nudge {
+  0%, 100% { transform: rotate(0deg); }
+  45%, 60% { transform: rotate(-28deg); }
+}
+
+@keyframes bn-lead {
+  0%, 24% { opacity: 0; transform: translate(0, 6px); }
+  28% { opacity: 1; transform: translate(0, 0); }
+  48% { transform: translate(0, 0); }
+  56%, 70% { transform: translate(52px, 0); }
+  78%, 88% { opacity: 1; transform: translate(104px, 0); }
+  94%, 100% { opacity: 0; transform: translate(104px, 0); }
+}
+
+@keyframes bn-tick {
+  0%, 78% { opacity: 0; }
+  80%, 88% { opacity: 1; }
+  94%, 100% { opacity: 0; }
+}
+
+@keyframes bz-typing {
+  0%, 9% { opacity: 0; }
+  10%, 22% { opacity: 1; }
+  23%, 100% { opacity: 0; }
+}
+
+@keyframes jv-scan {
+  0% { opacity: 0; transform: translateX(0); }
+  2% { opacity: 1; }
+  56% { opacity: 1; transform: translateX(260px); }
+  60%, 100% { opacity: 0; transform: translateX(260px); }
+}
+
+@keyframes bw-scan {
+  0% { opacity: 0; transform: translateY(0); }
+  3% { opacity: 1; }
+  36% { opacity: 1; transform: translateY(108px); }
+  40%, 100% { opacity: 0; transform: translateY(108px); }
+}
+
+@keyframes bw-bar {
+  0%, 46% { transform: scaleY(0.5); }
+  54%, 88% { transform: scaleY(1); }
+  96%, 100% { transform: scaleY(0.5); }
+}
+
+@keyframes pw-fill {
+  0% { transform: scaleX(0.05); }
+  50%, 86% { transform: scaleX(1); }
+  94%, 100% { transform: scaleX(0.05); }
+}
+
+@keyframes ox-eq {
+  from { transform: scaleY(0.3); }
+  to { transform: scaleY(1); }
+}
+
+@keyframes ml-cur {
+  0%, 10% { opacity: 0; transform: translate(0, 0); }
+  12%, 22% { opacity: 1; transform: translate(0, 0); }
+  28%, 36% { transform: translate(37px, 0); }
+  42%, 54% { opacity: 1; transform: translate(74px, 32px); }
+  58%, 100% { opacity: 0; transform: translate(74px, 32px); }
+}
+
+@keyframes fb-sweep {
+  0% { opacity: 0.6; transform: translateX(0); }
+  92% { opacity: 0.6; }
+  100% { opacity: 0; transform: translateX(150px); }
+}
+
+@keyframes fb-traj {
+  0% { stroke-dashoffset: 1; opacity: 1; }
+  50% { stroke-dashoffset: 0; }
+  86% { stroke-dashoffset: 0; opacity: 1; }
+  94%, 100% { stroke-dashoffset: 0; opacity: 0; }
+}
+
+/* ---------- reduced motion: the finished drawing, no loops ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .sketch:is(.sketch--ar, .sketch--platform, .sketch--research, .sketch--agent, [class*="sketch--init-"]) * {
+    animation: none !important;
+  }
+
+  .sketch:is(.sketch--ar, .sketch--platform, .sketch--research, .sketch--agent, [class*="sketch--init-"]) .dg-s,
+  .sketch--init-bona-ai .bn-lead {
+    opacity: 1;
+    transform: none;
+  }
+
+  .sketch:is(.sketch--ar, .sketch--platform, .sketch--research, .sketch--agent, [class*="sketch--init-"]) .dg-w,
+  .sketch.sketch--init-fruit-brain .fb-traj {
+    stroke-dashoffset: 0;
+  }
+}

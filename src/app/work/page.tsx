@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import { projects } from "@/content/projects";
 import { CTABand, PageHero } from "@/components/ui/PageHero";
 import { WorkDirectory } from "@/components/ui/WorkDirectory";
+import { surfaceAttrs } from "@/lib/surfaces";
 
 export const metadata: Metadata = {
   title: "Work",
@@ -17,22 +18,11 @@ export default function WorkPage() {
     <>
       <PageHero
         eyebrow="Work"
-        title={
-          <>
-            Engineering,
-            <br />
-            put to work.
-          </>
-        }
+        title={["Engineering,", "put to work."]}
         lead="Systems and projects across intelligent software, industrial automation, immersive technologies and integrated hardware. Filter by discipline; each entry links to its own record."
         crumbs={[{ label: "Home", href: "/" }, { label: "Work" }]}
-      >
-        <p className="pending-note" style={{ marginTop: 28 }}>
-          Illustrations on this page are conceptual line drawings. Approved project photography and client logos have not
-          been supplied yet, so client names are shown as text.
-        </p>
-      </PageHero>
-      <section className="section section--tight" data-theme="dark" aria-label="Project directory">
+      />
+      <section className="section section--tight" {...surfaceAttrs("ink")} aria-label="Project directory">
         <div className="container">
           <Suspense
             fallback={

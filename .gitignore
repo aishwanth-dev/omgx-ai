@@ -46,3 +46,5 @@ next-env.d.ts
 
 # QA output
 /qa-output/
+# logs
+*.log

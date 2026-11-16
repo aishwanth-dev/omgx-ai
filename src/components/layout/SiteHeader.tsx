@@ -5,10 +5,27 @@ import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "motion/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { primaryNav } from "@/content/site";
+import { blendBetween, headerToneAt, SURFACE_HEX, SURFACE_TONE, type Surface } from "@/lib/surfaces";
 import { Logo } from "./Logo";
 import { MegaMenu, type MegaKey } from "./MegaMenu";
 
 type HeaderTheme = "dark" | "light";
+
+const isSurface = (s: string | undefined): s is Surface => !!s && s in SURFACE_HEX;
+
+/**
+ * Inside a section's top blend, the header keeps the previous section's tone
+ * while its sample point is in the upper half of the blend (3.9).
+ */
+function blendTone(section: HTMLElement, sampleY: number, own: HeaderTheme): HeaderTheme {
+  const surface = section.dataset.surface;
+  const all = Array.from(document.querySelectorAll<HTMLElement>("[data-surface]"));
+  const prevEdge = all[all.indexOf(section) - 1]?.dataset.edge;
+  if (!isSurface(surface) || !isSurface(prevEdge) || !blendBetween(prevEdge, surface)) return own;
+  const blendH = parseFloat(getComputedStyle(section, "::before").height) || 0;
+  const offset = sampleY - section.getBoundingClientRect().top;
+  return headerToneAt(offset, blendH, SURFACE_TONE[prevEdge], own);
+}
 
 export function SiteHeader() {
   const pathname = usePathname();
@@ -51,7 +68,8 @@ export function SiteHeader() {
             overBare = true;
           }
           if (themed && themed !== document.body) {
-            found = themed.dataset.theme === "dark" ? "dark" : "light";
+            const own: HeaderTheme = themed.dataset.theme === "dark" ? "dark" : "light";
+            found = themed.dataset.surface ? blendTone(themed, y, own) : own;
             break;
           }
         }
@@ -133,7 +151,7 @@ export function SiteHeader() {
     >
       <div className="container site-header__inner">
         <Link href="/" className="site-header__logo" aria-label="OMGX AI — home" onClick={closeAll}>
-          <Logo />
+          <Logo size={32} priority />
         </Link>
 
         <nav className="site-header__nav" aria-label="Primary">
@@ -195,6 +213,7 @@ export function SiteHeader() {
           <motion.div
             id="mobile-menu"
             className="mobile-menu"
+            data-lenis-prevent=""
             role="dialog"
             aria-modal="true"
             aria-label="Site menu"
@@ -219,7 +238,6 @@ export function SiteHeader() {
                       onClick={closeAll}
                     >
                       <span>{item.label}</span>
-                      <span>{String(i).padStart(2, "0")}</span>
                     </Link>
                   </motion.li>
                 ))}

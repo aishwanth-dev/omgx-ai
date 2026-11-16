@@ -1,0 +1,577 @@
+/* ---------- systems sketches: kiosk, streaming, network, underwater, vr ---------- */
+
+/* Loops follow kit.css: they start once the sketch is drawn (data-drawn), wait
+   --loop for the draw-in, and the kit pauses them whenever data-run is not "1".
+   Using the same trigger as the kit's .pulse/.flash keeps every element of a
+   story on one clock. Only transform, opacity and stroke-dashoffset animate. */
+
+.sketch--streaming .sy-fill,
+.sketch--underwater .sy-fill {
+  fill: var(--sk-blue);
+  fill-opacity: 0.07;
+  stroke: none;
+}
+
+/* ===== kiosk ===== */
+
+.sketch--kiosk .ki-sb,
+.sketch--kiosk .ki-sc,
+.sketch--kiosk .ki-hl,
+.sketch--kiosk .ki-ripple,
+.sketch--kiosk .ki-scan {
+  opacity: 0;
+}
+
+.sketch--kiosk .ki-hl,
+.sketch--kiosk .ki-prog {
+  fill: var(--sk-blue);
+  fill-opacity: 0.25;
+  stroke: none;
+}
+
+.sketch--kiosk .ki-prog {
+  fill-opacity: 0.6;
+  transform-box: fill-box;
+  transform-origin: 0% 50%;
+}
+
+.sketch--kiosk .ki-ok {
+  fill-opacity: 0.3;
+}
+
+.sketch--kiosk .ki-ripple {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.sketch--kiosk .ki-rcpt {
+  transform-box: fill-box;
+  transform-origin: 50% 0%;
+}
+
+/* solid hand: hides the screen buttons and reader behind it during the tap */
+.sketch--kiosk .ki-hand .ki-hand__shape {
+  fill: var(--sk-bg, #080c18);
+}
+
+/* hand rests to the right of the cabinet */
+.sketch--kiosk .ki-hand {
+  transform: translate(100px, -50px);
+}
+
+/* ===== streaming ===== */
+
+.sketch--streaming .st-head {
+  transform-box: view-box;
+}
+
+.sketch--streaming .st-pkt {
+  opacity: 0;
+}
+
+.sketch--streaming .st-tile {
+  fill-opacity: 0.16;
+}
+
+.sketch--streaming .st-rec {
+  fill: var(--sk-red);
+  stroke: none;
+}
+
+/* ===== network ===== */
+
+.sketch--network .nw-led {
+  fill: var(--sk-blue);
+  stroke: none;
+}
+
+.sketch--network .nw-legend,
+.sketch--network .nw-hop {
+  fill: none;
+  stroke: var(--sk-blue);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.sketch--network .nw-legend {
+  stroke-dasharray: 3 10;
+}
+
+.sketch--network .nw-hop {
+  opacity: 0;
+  stroke-dasharray: 0.25 1.25;
+  stroke-dashoffset: 0.25;
+}
+
+.sketch--network .nw-hop--red {
+  stroke: var(--sk-red);
+}
+
+.sketch--network .nw-scan,
+.sketch--network .nw-shield {
+  opacity: 0;
+}
+
+.sketch--network .nw-shield {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.sketch--network .nw-glow {
+  fill-opacity: 0.16;
+}
+
+.sketch--network .nw-graph {
+  fill: none;
+  stroke: var(--sk-blue);
+  stroke-width: 1.3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1 1;
+  stroke-dashoffset: 0;
+}
+
+/* ===== underwater ===== */
+
+.sketch--underwater .uw-bob {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+}
+
+.sketch--underwater .uw-rad,
+.sketch--underwater .uw-ping,
+.sketch--underwater .uw-bub,
+.sketch--underwater .uw-fish {
+  opacity: 0;
+}
+
+.sketch--underwater .uw-ping {
+  transform-box: view-box;
+  transform-origin: 146px 207px;
+}
+
+/* ===== vr ===== */
+
+.sketch--vr .vr-sweep,
+.sketch--vr .vr-hit,
+.sketch--vr .vr-on,
+.sketch--vr .vr-open,
+.sketch--vr .vr-ray,
+.sketch--vr .vr-flow {
+  opacity: 0;
+}
+
+.sketch--vr .vr-sweep {
+  transform-box: view-box;
+}
+
+.sketch--vr .vr-sweep--a {
+  transform-origin: 40px 46px;
+}
+
+.sketch--vr .vr-sweep--b {
+  transform-origin: 360px 46px;
+}
+
+.sketch--vr .vr-hit {
+  fill: var(--sk-red);
+  stroke: none;
+}
+
+.sketch--vr .vr-ray {
+  fill: none;
+  stroke: var(--sk-red);
+  stroke-width: 1.2;
+  stroke-linecap: round;
+  stroke-dasharray: 1 1;
+  stroke-dashoffset: 1;
+}
+
+.sketch--vr .vr-flow {
+  fill: none;
+  stroke: var(--sk-blue);
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  stroke-dasharray: 4 6;
+}
+
+.sketch--vr .vr-open {
+  fill: var(--sk-blue);
+  fill-opacity: 0.9;
+}
+
+.sketch--vr .vr-wheel {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+/* ===== loops ===== */
+
+@media (prefers-reduced-motion: no-preference) {
+  /* kiosk: tap, menu -> scan QR -> printing, ticket slides out (6s) */
+  .sketch--kiosk.sketch[data-drawn] .ki-hand {
+    animation: ki-hand var(--cyc) ease-in-out calc(var(--loop) + var(--l, 0s)) infinite both;
+  }
+
+  .sketch--kiosk.sketch[data-drawn] .ki-ripple {
+    animation: ki-ripple var(--cyc) ease-out calc(var(--loop) + var(--l, 0s)) infinite both;
+  }
+
+  .sketch--kiosk.sketch[data-drawn] .ki-hl {
+    animation: ki-hl var(--cyc) ease-out calc(var(--loop) + var(--l, 0s)) infinite both;
+  }
+
+  .sketch--kiosk.sketch[data-drawn] .ki-sa {
+    animation: ki-sa var(--cyc) linear calc(var(--loop) + var(--l, 0s)) infinite both;
+  }
+
+  .sketch--kiosk.sketch[data-drawn] .ki-sb {
+    animation: ki-sb var(--cyc) linear calc(var(--loop) + var(--l, 0s)) infinite both;
+  }
+
+  .sketch--kiosk.sketch[data-drawn] .ki-sc {
+    animation: ki-sc var(--cyc) linear calc(var(--loop) + var(--l, 0s)) infinite both;
+  }
+
+  .sketch--kiosk.sketch[data-drawn] .ki-prog {
+    animation: ki-prog var(--cyc) linear calc(var(--loop) + var(--l, 0s)) infinite both;
+  }
+
+  .sketch--kiosk.sketch[data-drawn] .ki-scan {
+    animation: ki-scan var(--cyc) ease-in-out calc(var(--loop) + var(--l, 0s)) infinite both;
+  }
+
+  .sketch--kiosk.sketch[data-drawn] .ki-rcpt {
+    animation: ki-rcpt var(--cyc) ease-out calc(var(--loop) + var(--l, 0s)) infinite both;
+  }
+
+  /* streaming: heads pan, frames hop to the NVR, then to the wall (4.8s) */
+  .sketch--streaming.sketch[data-drawn] .st-head {
+    animation: st-pan var(--cyc) ease-in-out calc(var(--loop) + var(--l, 0s)) infinite both;
+  }
+
+  .sketch--streaming.sketch[data-drawn] .st-pkt {
+    animation: st-pkt var(--cyc) linear calc(var(--loop) + var(--l, 0s)) infinite both;
+  }
+
+  .sketch--streaming.sketch[data-drawn] .st-rec {
+    animation: st-rec var(--cyc) steps(1, end) calc(var(--loop) + var(--l, 0s)) infinite both;
+  }
+
+  /* network: hops, link LEDs, firewall scan and shield, NMS graph (5.4s) */
+  .sketch--network.sketch[data-drawn] .nw-hop {
+    animation: nw-hop var(--cyc) linear calc(var(--loop) + var(--l, 0s)) infinite both;
+  }
+
+  .sketch--network.sketch[data-drawn] .nw-led {
+    animation: nw-led var(--cyc) steps(1, end) calc(var(--loop) + var(--l, 0s)) infinite both;
+  }
+
+  .sketch--network.sketch[data-drawn] .nw-scan {
+    animation: nw-scan var(--cyc) ease-in-out calc(var(--loop) + var(--l, 0s)) infinite both;
+  }
+
+  .sketch--network.sketch[data-drawn] .nw-shield {
+    animation: nw-shield var(--cyc) ease-out calc(var(--loop) + var(--l, 0s)) infinite both;
+  }
+
+  .sketch--network.sketch[data-drawn] .nw-graph {
+    animation: nw-graph var(--cyc) ease-in-out calc(var(--loop) + var(--l, 0s)) infinite both;
+  }
+
+  /* underwater: swell, buoy bob, ping, fish, bubbles, uplink (6s) */
+  .sketch--underwater.sketch[data-drawn] .uw-wave {
+    animation: uw-wave var(--cyc) ease-in-out calc(var(--loop) + var(--l, 0s)) infinite both;
+  }
+
+  .sketch--underwater.sketch[data-drawn] .uw-wave--2 {
+    animation-direction: reverse;
+  }
+
+  .sketch--underwater.sketch[data-drawn] .uw-bob {
+    animation: uw-bob var(--cyc) ease-in-out calc(var(--loop) + var(--l, 0s)) infinite both;
+  }
+
+  .sketch--underwater.sketch[data-drawn] .uw-ping {
+    animation: uw-ping var(--cyc) ease-out calc(var(--loop) + var(--l, 0s)) infinite both;
+  }
+
+  .sketch--underwater.sketch[data-drawn] .uw-fish {
+    animation: uw-fish var(--cyc) linear calc(var(--loop) + var(--l, 0s)) infinite both;
+  }
+
+  .sketch--underwater.sketch[data-drawn] .uw-bub {
+    animation: uw-bub var(--cyc) ease-in calc(var(--loop) + var(--l, 0s)) infinite both;
+  }
+
+  .sketch--underwater.sketch[data-drawn] .uw-rad {
+    animation: uw-rad var(--cyc) ease-out calc(var(--loop) + var(--l, 0s)) infinite both;
+  }
+
+  /* vr: base-station sweeps, ray cast, highlight, valve turns open (6s) */
+  .sketch--vr.sketch[data-drawn] .vr-sweep--a {
+    animation: vr-sweep-a var(--cyc) linear calc(var(--loop) + var(--l, 0s)) infinite both;
+  }
+
+  .sketch--vr.sketch[data-drawn] .vr-sweep--b {
+    animation: vr-sweep-b var(--cyc) linear calc(var(--loop) + var(--l, 0s)) infinite both;
+  }
+
+  .sketch--vr.sketch[data-drawn] .vr-hit {
+    animation: vr-hit var(--cyc) ease-out calc(var(--loop) + var(--l, 0s)) infinite both;
+  }
+
+  .sketch--vr.sketch[data-drawn] .vr-ray {
+    animation: vr-ray var(--cyc) ease-out calc(var(--loop) + var(--l, 0s)) infinite both;
+  }
+
+  .sketch--vr.sketch[data-drawn] .vr-on {
+    animation: vr-on var(--cyc) linear calc(var(--loop) + var(--l, 0s)) infinite both;
+  }
+
+  .sketch--vr.sketch[data-drawn] .vr-wheel {
+    animation: vr-wheel var(--cyc) ease-in-out calc(var(--loop) + var(--l, 0s)) infinite both;
+  }
+
+  .sketch--vr.sketch[data-drawn] .vr-closed {
+    animation: vr-closed var(--cyc) linear calc(var(--loop) + var(--l, 0s)) infinite both;
+  }
+
+  .sketch--vr.sketch[data-drawn] .vr-open {
+    animation: vr-open var(--cyc) linear calc(var(--loop) + var(--l, 0s)) infinite both;
+  }
+
+  .sketch--vr.sketch[data-drawn] .vr-flow {
+    animation: vr-flow var(--cyc) linear calc(var(--loop) + var(--l, 0s)) infinite both;
+  }
+}
+
+/* ===== keyframes ===== */
+
+@keyframes ki-hand {
+  0% { transform: translate(100px, -50px); }
+  10% { transform: translate(3px, -3px); }
+  13%, 18% { transform: translate(0, 0); }
+  30%, 100% { transform: translate(100px, -50px); }
+}
+
+@keyframes ki-ripple {
+  0%, 12.9% { opacity: 0; transform: scale(0.4); }
+  13% { opacity: 0.9; transform: scale(0.4); }
+  26%, 100% { opacity: 0; transform: scale(2.2); }
+}
+
+@keyframes ki-hl {
+  0%, 12.9% { opacity: 0; }
+  13% { opacity: 1; }
+  26%, 100% { opacity: 0; }
+}
+
+@keyframes ki-sa {
+  0%, 25.9% { opacity: 1; }
+  26%, 95.9% { opacity: 0; }
+  96%, 100% { opacity: 1; }
+}
+
+@keyframes ki-sb {
+  0%, 25.9% { opacity: 0; }
+  26%, 59.9% { opacity: 1; }
+  60%, 100% { opacity: 0; }
+}
+
+@keyframes ki-sc {
+  0%, 59.9% { opacity: 0; }
+  60%, 95.9% { opacity: 1; }
+  96%, 100% { opacity: 0; }
+}
+
+@keyframes ki-prog {
+  0%, 30% { transform: scaleX(0); }
+  56%, 100% { transform: scaleX(1); }
+}
+
+@keyframes ki-scan {
+  0%, 29.9% { opacity: 0; transform: translateY(0); }
+  30% { opacity: 1; transform: translateY(0); }
+  38% { transform: translateY(16px); }
+  46% { transform: translateY(0); }
+  54% { opacity: 1; transform: translateY(16px); }
+  55%, 100% { opacity: 0; transform: translateY(16px); }
+}
+
+@keyframes ki-rcpt {
+  0%, 61% { opacity: 1; transform: translateY(0) scaleY(0); }
+  80%, 90% { opacity: 1; transform: translateY(0) scaleY(1); }
+  97% { opacity: 0; transform: translateY(8px) scaleY(1); }
+  100% { opacity: 0; transform: translateY(0) scaleY(0); }
+}
+
+@keyframes st-pan {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-8deg); }
+  75% { transform: rotate(8deg); }
+}
+
+@keyframes st-pkt {
+  0% { opacity: 0; transform: translateX(0); }
+  2% { opacity: 1; }
+  16% { opacity: 1; transform: translateX(40px); }
+  16.1%, 100% { opacity: 0; transform: translateX(40px); }
+}
+
+@keyframes st-rec {
+  0% { opacity: 1; }
+  25% { opacity: 0.15; }
+  50% { opacity: 1; }
+  75% { opacity: 0.15; }
+}
+
+@keyframes nw-hop {
+  0% { stroke-dashoffset: 0.25; opacity: 0; }
+  1% { opacity: 1; }
+  10% { stroke-dashoffset: -1; opacity: 1; }
+  10.1%, 100% { stroke-dashoffset: -1; opacity: 0; }
+}
+
+@keyframes nw-led {
+  0% { opacity: 1; }
+  8% { opacity: 0.15; }
+  16% { opacity: 1; }
+  41% { opacity: 0.15; }
+  47% { opacity: 1; }
+  70% { opacity: 0.2; }
+  78% { opacity: 1; }
+}
+
+@keyframes nw-scan {
+  0%, 9.9% { opacity: 0; transform: translateX(0); }
+  10% { opacity: 1; transform: translateX(0); }
+  17% { transform: translateX(44px); }
+  24% { opacity: 1; transform: translateX(0); }
+  24.1%, 100% { opacity: 0; transform: translateX(0); }
+}
+
+@keyframes nw-shield {
+  0%, 23.9% { opacity: 0; transform: scale(0.8); }
+  25% { opacity: 1; transform: scale(1); }
+  36%, 100% { opacity: 0; transform: scale(1.15); }
+}
+
+@keyframes nw-graph {
+  0%, 85.5% { stroke-dashoffset: 0; }
+  85.6% { stroke-dashoffset: 1; }
+  96%, 100% { stroke-dashoffset: 0; }
+}
+
+@keyframes uw-wave {
+  0%, 100% { transform: translate(-10px, 0); }
+  50% { transform: translate(10px, 1.5px); }
+}
+
+@keyframes uw-bob {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50% { transform: translateY(2px) rotate(2deg); }
+}
+
+@keyframes uw-ping {
+  0% { opacity: 0; transform: scale(1); }
+  3% { opacity: 0.9; }
+  30%, 100% { opacity: 0; transform: scale(3.8); }
+}
+
+@keyframes uw-fish {
+  0% { opacity: 0; transform: translateX(-36px); }
+  8%, 42% { opacity: 1; }
+  50%, 100% { opacity: 0; transform: translateX(36px); }
+}
+
+@keyframes uw-bub {
+  0% { opacity: 0; transform: translate(0, 0); }
+  5% { opacity: 0.8; }
+  38% { opacity: 0.8; }
+  42%, 100% { opacity: 0; transform: translate(var(--bx, 0px), -96px); }
+}
+
+@keyframes uw-rad {
+  0% { opacity: 0; }
+  4% { opacity: 1; }
+  20%, 100% { opacity: 0; }
+}
+
+@keyframes vr-sweep-a {
+  0% { opacity: 0; transform: rotate(0deg); }
+  2% { opacity: 0.8; }
+  20% { opacity: 0.8; transform: rotate(70deg); }
+  21%, 100% { opacity: 0; transform: rotate(70deg); }
+}
+
+@keyframes vr-sweep-b {
+  0% { opacity: 0; transform: rotate(0deg); }
+  2% { opacity: 0.8; }
+  20% { opacity: 0.8; transform: rotate(-70deg); }
+  21%, 100% { opacity: 0; transform: rotate(-70deg); }
+}
+
+@keyframes vr-hit {
+  0% { opacity: 0; }
+  2% { opacity: 1; }
+  10%, 100% { opacity: 0; }
+}
+
+@keyframes vr-ray {
+  0%, 9.9% { opacity: 0; stroke-dashoffset: 1; }
+  10% { opacity: 1; stroke-dashoffset: 1; }
+  18%, 80% { opacity: 1; stroke-dashoffset: 0; }
+  86%, 100% { opacity: 0; stroke-dashoffset: 0; }
+}
+
+@keyframes vr-on {
+  0%, 17.9% { opacity: 0; }
+  18%, 80% { opacity: 1; }
+  86%, 100% { opacity: 0; }
+}
+
+@keyframes vr-wheel {
+  0%, 30% { transform: rotate(0deg); }
+  65%, 100% { transform: rotate(120deg); }
+}
+
+@keyframes vr-closed {
+  0%, 62% { opacity: 1; }
+  64%, 92% { opacity: 0; }
+  94%, 100% { opacity: 1; }
+}
+
+@keyframes vr-open {
+  0%, 62% { opacity: 0; }
+  64%, 92% { opacity: 1; }
+  94%, 100% { opacity: 0; }
+}
+
+@keyframes vr-flow {
+  0% { opacity: 0; stroke-dashoffset: 0; }
+  62% { opacity: 0; }
+  66%, 92% { opacity: 1; }
+  95%, 100% { opacity: 0; stroke-dashoffset: -60; }
+}
+
+/* reduced motion: the finished drawing with a static story frame */
+@media (prefers-reduced-motion: reduce) {
+  .sketch--underwater .uw-fish,
+  .sketch--underwater .uw-ping {
+    opacity: 0.8;
+  }
+
+  .sketch--underwater .uw-bub {
+    opacity: 0.5;
+  }
+
+  .sketch--vr .vr-ray {
+    opacity: 1;
+    stroke-dashoffset: 0;
+  }
+
+  .sketch--vr .vr-on {
+    opacity: 1;
+  }
+}

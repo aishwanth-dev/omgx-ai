@@ -1,13 +1,15 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { CapabilityHeroVisual } from "@/components/ui/CapabilityHeroVisual";
+import { CapabilityGlyph } from "@/components/ui/CapabilityGlyph";
 import { CTABand, Breadcrumbs } from "@/components/ui/PageHero";
 import { ProjectVisual } from "@/components/ui/ProjectVisual";
 import { capabilities, getCapability } from "@/content/capabilities";
 import { processSteps, processNote } from "@/content/company";
 import { getInitiative, initiativeTypeLabels } from "@/content/initiatives";
 import { getProject, projectDisplayName, type Project } from "@/content/projects";
+import { RevealHeading } from "@/components/motion/RevealHeading";
+import { surfaceAttrs, themeSurface } from "@/lib/surfaces";
 
 export const dynamicParams = false;
 
@@ -28,11 +30,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 }
 
 /** Each discipline gets its own composition; the design system is shared. */
-const LAYOUT: Record<string, { hero: "split-right" | "split-left" | "immersive" | "stacked" }> = {
+const LAYOUT: Record<string, { hero: "split-right" | "split-left" }> = {
   "artificial-intelligence": { hero: "split-right" },
   "industrial-automation": { hero: "split-left" },
-  "immersive-technologies": { hero: "immersive" },
-  "hardware-engineering": { hero: "stacked" },
+  "immersive-technologies": { hero: "split-right" },
+  "hardware-engineering": { hero: "split-left" },
 };
 
 export default async function CapabilityPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -48,15 +50,12 @@ export default async function CapabilityPage({ params }: { params: Promise<{ slu
 
   return (
     <article className={`cap-page cap-page--${cap.slug}`}>
-      <section className={`cap-hero cap-hero--${layout}`} data-theme={tone}>
-        {layout === "immersive" && <CapabilityHeroVisual slug={cap.slug} className="cap-hero__bg" />}
+      <section className={`cap-hero cap-hero--${layout}`} {...surfaceAttrs(themeSurface(tone))}>
         <div className="container cap-hero__inner">
           <div className="cap-hero__copy">
             <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Capabilities", href: "/capabilities" }, { label: cap.shortTitle }]} />
-            <p className="t-utility cap-hero__index">
-              Capability {cap.index} / 04
-            </p>
-            <h1 className="t-display-xl cap-hero__title">{cap.title}</h1>
+            <p className="t-utility cap-hero__index">Capability</p>
+            <RevealHeading as="h1" className="t-display-xl cap-hero__title" text={cap.title} />
             <p className="t-lead cap-hero__lead">{cap.positioning}</p>
             <div className="cap-hero__ctas">
               <Link href="/contact" className="btn btn--primary">
@@ -67,17 +66,17 @@ export default async function CapabilityPage({ params }: { params: Promise<{ slu
               </a>
             </div>
           </div>
-          {layout !== "immersive" && <CapabilityHeroVisual slug={cap.slug} className="cap-hero__visual" />}
+          <div className="cap-hero__visual" aria-hidden="true">
+            <CapabilityGlyph slug={cap.slug} />
+          </div>
         </div>
       </section>
 
-      <section className="section cap-what" data-theme={tone === "dark" ? "light" : "dark"} aria-labelledby="what-title">
+      <section className="section cap-what" {...surfaceAttrs(tone === "dark" ? "mist" : "ink")} aria-labelledby="what-title">
         <div className="container cap-what__grid">
           <div>
             <p className="t-utility">What OMGX does</p>
-            <h2 id="what-title" className="t-display cap-what__title">
-              {cap.shortTitle}, engineered for real operations.
-            </h2>
+            <RevealHeading id="what-title" className="t-display cap-what__title" text={`${cap.shortTitle}, engineered for real operations.`} />
           </div>
           <div className="cap-what__copy">
             <p className="t-lead">{cap.intro}</p>
@@ -89,21 +88,18 @@ export default async function CapabilityPage({ params }: { params: Promise<{ slu
         </div>
       </section>
 
-      <section className="section" data-theme={tone} aria-labelledby="list-title">
+      <section className="section" {...surfaceAttrs(themeSurface(tone))} aria-labelledby="list-title">
         <div className="container cap-lists">
           <div className="cap-lists__col">
             <p className="t-utility">Capabilities</p>
             <h2 id="list-title" className="t-h3 cap-lists__title">
               What the team works with
             </h2>
-            <ol className="cap-lists__items">
-              {cap.capabilities.map((c, i) => (
-                <li key={c}>
-                  <span>{String(i + 1).padStart(2, "0")}</span>
-                  {c}
-                </li>
+            <ul className="cap-lists__items">
+              {cap.capabilities.map((c) => (
+                <li key={c}>{c}</li>
               ))}
-            </ol>
+            </ul>
           </div>
           <div className="cap-lists__col">
             <p className="t-utility">Solutions</p>
@@ -123,13 +119,11 @@ export default async function CapabilityPage({ params }: { params: Promise<{ slu
         </div>
       </section>
 
-      <section id="related" className="section" data-theme="dark" aria-labelledby="related-title">
+      <section id="related" className="section" {...surfaceAttrs("ink")} aria-labelledby="related-title">
         <div className="container">
           <div className="related__head">
             <p className="t-utility">Related documented work</p>
-            <h2 id="related-title" className="t-display">
-              {related.length > 0 ? "Where this has been applied." : "Related initiatives."}
-            </h2>
+            <RevealHeading id="related-title" className="t-display" text={related.length > 0 ? "Where this has been applied." : "Related initiatives."} />
           </div>
 
           {related.length > 0 && (
@@ -160,7 +154,6 @@ export default async function CapabilityPage({ params }: { params: Promise<{ slu
                     <Link href={`/products-research#${i.slug}`} className="cap-initiative">
                       <span className="cap-initiative__name">{i.name}</span>
                       <span className="chip">{initiativeTypeLabels[i.type].label}</span>
-                      <span className="chip chip--pending">{i.status}</span>
                     </Link>
                   </li>
                 ))}
@@ -170,12 +163,10 @@ export default async function CapabilityPage({ params }: { params: Promise<{ slu
         </div>
       </section>
 
-      <section className="section section--tight" data-theme="light" aria-labelledby="approach-title">
+      <section className="section section--tight" {...surfaceAttrs("mist")} aria-labelledby="approach-title">
         <div className="container">
           <p className="t-utility">Engineering approach</p>
-          <h2 id="approach-title" className="t-display" style={{ marginTop: 16 }}>
-            From complex problem to working system.
-          </h2>
+          <RevealHeading id="approach-title" className="t-display" style={{ marginTop: 16 }} text="From complex problem to working system." />
           <ol className="approach">
             {processSteps.map((s) => (
               <li key={s.key} className="approach__step">
@@ -191,9 +182,9 @@ export default async function CapabilityPage({ params }: { params: Promise<{ slu
         </div>
       </section>
 
-      <section className="next-cap" data-theme="dark">
+      <section className="next-cap" {...surfaceAttrs("ink")}>
         <Link href={`/capabilities/${next.slug}`} className="container next-cap__link">
-          <span className="t-utility">Next capability · {next.index}</span>
+          <span className="t-utility">Next capability</span>
           <span className="t-display next-cap__title">{next.title}</span>
           <span className="next-cap__arrow" aria-hidden="true">
             →

@@ -1,0 +1,338 @@
+/* ==========================================================================
+   Work section, closing call to action. Specificity is raised on purpose so
+   these rules win over the older ones in home.css and scenes.css.
+   ========================================================================== */
+
+/* ---------- Work: "Engineering, put to work." ---------- */
+
+.section.wk {
+  --wk-p: 0.5;
+  overflow: clip;
+  padding-block: clamp(96px, 11vw, 176px);
+}
+
+.wk .wk__bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 22%, #000 78%, transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0%, #000 22%, #000 78%, transparent 100%);
+}
+
+.wk .wk__grid-lines {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  -webkit-mask-image: radial-gradient(75% 70% at 72% 50%, #000 0%, transparent 100%);
+  mask-image: radial-gradient(75% 70% at 72% 50%, #000 0%, transparent 100%);
+}
+
+.wk .wk__grid-lines::before {
+  content: "";
+  position: absolute;
+  inset: -72px;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.055) 1px, transparent 1px);
+  background-size: 72px 72px;
+  transform: translate3d(calc(var(--wk-p) * -72px), calc(var(--wk-p) * -72px), 0);
+}
+
+.wk .wk__glow {
+  position: absolute;
+  right: -10vw;
+  top: 50%;
+  width: min(70vw, 1000px);
+  aspect-ratio: 1;
+  margin-top: calc(min(70vw, 1000px) / -2);
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(46, 96, 235, 0.2), rgba(11, 26, 74, 0.12) 55%, transparent 100%);
+  transform: translate3d(calc((var(--wk-p) - 0.5) * -14vw), calc((var(--wk-p) - 0.5) * 16vw), 0);
+}
+
+.wk .wk__layout {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.12fr);
+  grid-template-areas:
+    "head list"
+    "cta  list";
+  grid-template-rows: auto 1fr;
+  column-gap: clamp(40px, 6vw, 120px);
+  row-gap: clamp(28px, 3vw, 44px);
+  align-items: start;
+}
+
+.wk .wk__head {
+  grid-area: head;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(20px, 2.2vw, 32px);
+}
+
+.wk .wk__eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  color: var(--omgx-matcha);
+}
+
+.wk .wk__eyebrow span:last-child {
+  color: var(--fg-muted);
+}
+
+.wk .wk__eyebrow-rule {
+  width: clamp(36px, 5vw, 72px);
+  height: 1px;
+  background: currentColor;
+  opacity: 0.5;
+}
+
+.wk .wk__title {
+  font-size: clamp(50px, 7.6vw, 132px);
+  line-height: 0.92;
+  letter-spacing: -0.05em;
+  text-transform: none;
+}
+
+.wk .wk__lead {
+  max-width: 34ch;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.wk .wk__cta {
+  grid-area: cta;
+}
+
+.wk .wk__list {
+  grid-area: list;
+  position: relative;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--line);
+}
+
+.wk .wk__item {
+  position: relative;
+  list-style: none;
+}
+
+.wk .wk__row {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: 12px;
+  padding: clamp(18px, 1.9vw, 28px) 6px clamp(18px, 1.9vw, 28px) 0;
+  isolation: isolate;
+  color: var(--fg);
+  outline-offset: -2px;
+}
+
+/* Soft blue wash behind the hovered row. */
+.wk .wk__row::before {
+  content: "";
+  position: absolute;
+  inset: 0 -14px;
+  z-index: -1;
+  background: radial-gradient(70% 160% at 0% 50%, rgba(46, 96, 235, 0.18), rgba(46, 96, 235, 0.05) 55%, transparent 80%);
+  opacity: 0;
+  transition: opacity 0.5s var(--ease-out);
+}
+
+.wk .wk__name {
+  font-size: clamp(19px, 1.75vw, 28px);
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+  transition: transform 0.5s var(--ease-out), color 0.35s var(--ease-out);
+}
+
+.wk .wk__arrow {
+  display: inline-grid;
+  place-items: center;
+  color: var(--fg-muted);
+  transition: transform 0.5s var(--ease-out), color 0.35s var(--ease-out);
+}
+
+/* Bottom rule: a hairline, with a blue progress rule that draws across on hover. */
+.wk .wk__rule {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: var(--line);
+}
+
+.wk .wk__rule::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, var(--omgx-matcha), rgba(46, 96, 235, 0.2));
+  box-shadow: 0 0 14px rgba(46, 96, 235, 0.6);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.7s var(--ease-out);
+}
+
+.wk .wk__row:hover::before,
+.wk .wk__row:focus-visible::before {
+  opacity: 1;
+}
+
+.wk .wk__row:hover .wk__arrow,
+.wk .wk__row:focus-visible .wk__arrow {
+  color: var(--omgx-matcha);
+}
+
+.wk .wk__row:hover .wk__name,
+.wk .wk__row:focus-visible .wk__name {
+  transform: translateX(10px);
+}
+
+.wk .wk__row:hover .wk__arrow,
+.wk .wk__row:focus-visible .wk__arrow {
+  transform: translateX(8px);
+}
+
+.wk .wk__row:hover .wk__rule::after,
+.wk .wk__row:focus-visible .wk__rule::after {
+  transform: scaleX(1);
+}
+
+/* Reveal: rows wipe in one after another when the section scrolls into view.
+   Only under html.motion, so no-JS and reduced motion show the final state. */
+@keyframes wk-row-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+    clip-path: inset(0 0 100% 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    clip-path: inset(-40% -8% -40% -8%);
+  }
+}
+
+html.motion .section.wk .wk__item {
+  opacity: 0;
+}
+
+html.motion .section.wk.is-in .wk__item {
+  animation: wk-row-in 0.9s var(--ease-out) both;
+  animation-delay: calc(0.3s + var(--i, 0) * 0.09s);
+}
+
+html.motion .section.wk .wk__head > :not(h2),
+html.motion .section.wk .wk__cta {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.8s var(--ease-out), transform 0.8s var(--ease-out);
+}
+
+html.motion .section.wk.is-in .wk__head > :not(h2),
+html.motion .section.wk.is-in .wk__cta {
+  opacity: 1;
+  transform: none;
+}
+
+html.motion .section.wk.is-in .wk__lead {
+  transition-delay: 0.15s;
+}
+
+html.motion .section.wk.is-in .wk__cta {
+  transition-delay: 0.9s;
+}
+
+@media (max-width: 900px) {
+  .wk .wk__layout {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "head"
+      "list"
+      "cta";
+    grid-template-rows: auto;
+    row-gap: 36px;
+  }
+
+  .wk .wk__title {
+    font-size: clamp(46px, 14vw, 88px);
+  }
+
+  .wk .wk__lead {
+    max-width: 42ch;
+  }
+
+  .wk .wk__glow {
+    right: -40vw;
+    width: 120vw;
+    margin-top: -60vw;
+  }
+}
+
+/* ---------- Closing call to action: the model sits behind the form, on the right ---------- */
+
+.section.final-cta {
+  --cta-p: 0.5;
+}
+
+/* Large, dim and slowly turning; scroll adds a gentle parallax. It never takes pointer events. */
+.section.final-cta .final-cta__visual {
+  left: auto;
+  right: -10vw;
+  top: 50%;
+  width: min(74vw, 1120px);
+  aspect-ratio: 1;
+  translate: 0 calc(-50% + (var(--cta-p) - 0.5) * -110px);
+  opacity: 0.3;
+  z-index: -1;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 22%, #000 78%, transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0%, #000 22%, #000 78%, transparent 100%);
+}
+
+.section.final-cta .final-cta__visual * {
+  pointer-events: none;
+}
+
+/* Red light on the right, behind the model. The mask takes it to nothing at the bottom edge, which is
+   exactly the footer's top colour, so the section meets the footer without a step. */
+.section.final-cta .final-cta__glow {
+  background:
+    radial-gradient(52% 58% at 78% 46%, rgba(212, 33, 61, 0.26) 0%, rgba(74, 10, 20, 0.2) 48%, transparent 80%),
+    radial-gradient(44% 50% at 8% 30%, rgba(46, 96, 235, 0.14) 0%, transparent 72%);
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 50%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 0%, #000 50%, transparent 100%);
+}
+
+/* The old dark band over the glow is gone. */
+.section.final-cta::after {
+  content: none;
+  display: none;
+}
+
+.section.final-cta .final-cta__form {
+  background: rgba(5, 7, 15, 0.46);
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
+}
+
+@media (max-width: 900px) {
+  .section.final-cta .final-cta__visual {
+    right: -46vw;
+    top: 56%;
+    width: 132vw;
+    opacity: 0.18;
+  }
+
+  .section.final-cta .final-cta__glow {
+    background:
+      radial-gradient(70% 40% at 70% 60%, rgba(46, 96, 235, 0.22) 0%, rgba(11, 26, 74, 0.16) 50%, transparent 82%);
+  }
+}

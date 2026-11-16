@@ -1,0 +1,190 @@
+/* ==========================================================================
+   Preloader: ink-to-blue field, drawn spline lines, the logo with the
+   "OMGX AI" wordmark on its left, and a three-digit counter bottom-right.
+   ========================================================================== */
+.omx-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  color: #f4f7ff;
+  background:
+    radial-gradient(70% 55% at 12% -10%, rgba(31, 79, 216, 0.34), transparent 65%),
+    radial-gradient(60% 45% at 50% 118%, rgba(212, 33, 61, 0.2), transparent 70%),
+    linear-gradient(165deg, #05070f 0%, #070d24 55%, #0a1438 100%);
+  clip-path: inset(0 0 0 0);
+}
+html:not(.js) .omx-loader {
+  display: none;
+}
+
+/* ---- animated lines ---- */
+.omx-loader__lines {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.omx-loader__line {
+  fill: none;
+  stroke-width: 1;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: omx-draw 1.9s cubic-bezier(0.65, 0, 0.2, 1) forwards;
+}
+.omx-loader__line--blue {
+  stroke: rgba(79, 124, 255, 0.55);
+}
+.omx-loader__line--soft {
+  stroke: rgba(157, 182, 255, 0.4);
+}
+.omx-loader__line--red {
+  stroke: rgba(255, 74, 94, 0.42);
+}
+.omx-loader__line--white {
+  stroke: rgba(244, 247, 255, 0.34);
+}
+.omx-loader__pulse {
+  fill: none;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-dasharray: 0.07 1.2;
+  stroke-dashoffset: 0.07;
+  opacity: 0;
+  animation: omx-sweep 3.4s 1.2s linear infinite;
+}
+.omx-loader__pulse--blue {
+  stroke: #4f7cff;
+}
+.omx-loader__pulse--red {
+  stroke: #ff4a5e;
+}
+.omx-loader__pulse--white {
+  stroke: #f4f7ff;
+}
+
+/* ---- brand ---- */
+.omx-loader__brand {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(10px, 2vw, 28px);
+  max-width: calc(100% - 32px);
+  animation: omx-rise 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.omx-loader__word {
+  margin: 0;
+  font-family: var(--font-switzer), system-ui, sans-serif;
+  font-weight: 700;
+  font-size: clamp(34px, 7vw, 96px);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  white-space: nowrap;
+  color: #fff;
+}
+.omx-loader__word span {
+  margin-left: 0.12em;
+  font-weight: 500;
+  color: #9db6ff;
+}
+.omx-loader__brand .logo__img {
+  width: clamp(64px, 12vw, 164px);
+  height: auto;
+  aspect-ratio: 1;
+  flex: none;
+  filter: drop-shadow(0 0 22px rgba(79, 124, 255, 0.4)) drop-shadow(0 2px 10px rgba(0, 0, 0, 0.5));
+}
+
+/* ---- counter ---- */
+.omx-loader__count {
+  position: absolute;
+  right: max(var(--gutter, 24px), env(safe-area-inset-right));
+  bottom: max(20px, env(safe-area-inset-bottom));
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  margin: 0;
+  font-family: var(--font-switzer), system-ui, sans-serif;
+  font-weight: 500;
+  font-size: clamp(56px, 9vw, 132px);
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  color: #fff;
+}
+.omx-loader__count small {
+  font-size: clamp(14px, 1.6vw, 22px);
+  font-weight: 600;
+  letter-spacing: 0;
+  color: #fff;
+}
+.omx-loader__skip {
+  position: absolute;
+  left: max(var(--gutter, 24px), env(safe-area-inset-left));
+  bottom: max(20px, env(safe-area-inset-bottom));
+  min-height: 44px;
+  padding: 0 4px;
+  color: rgba(244, 247, 255, 0.6);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.omx-loader__skip:hover,
+.omx-loader__skip:focus-visible {
+  color: #fff;
+}
+.omx-loader__sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@keyframes omx-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes omx-sweep {
+  0% {
+    stroke-dashoffset: 0.07;
+    opacity: 0;
+  }
+  10%,
+  85% {
+    opacity: 0.95;
+  }
+  100% {
+    stroke-dashoffset: -1.2;
+    opacity: 0;
+  }
+}
+@keyframes omx-rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .omx-loader__line {
+    animation: none;
+    stroke-dashoffset: 0;
+    opacity: 0.6;
+  }
+  .omx-loader__pulse {
+    display: none;
+  }
+  .omx-loader__brand {
+    animation: none;
+  }
+}

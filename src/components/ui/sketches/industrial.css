@@ -1,0 +1,814 @@
+/* ---------- industrial sketches: process, testrig, robotics, andon, wireless, embedded ----------
+   Loops run only while the sketch is in view (data-run="1"), start after the
+   draw-in (--loop) and use the kind's cycle (--cyc). Only transform, opacity
+   and stroke-dashoffset animate. pathLength-based dashes stay in user space. */
+
+/* ===== process: transfer T-101 -> T-102, then drain T-102 and refill T-101 ===== */
+
+.sketch--process .pr-liq {
+  fill: var(--sk-blue);
+  fill-opacity: 0.1;
+  stroke: none;
+}
+
+.sketch--process .pr-glass {
+  fill: var(--sk-blue);
+  fill-opacity: 0.55;
+  stroke: none;
+}
+
+.sketch--process .pr-liq,
+.sketch--process .pr-glass {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+}
+
+.sketch--process .pr-l1 { transform: scaleY(0.85); }
+.sketch--process .pr-l2 { transform: scaleY(0.3); }
+.sketch--process .pr-s1 { transform: translateY(17.9px); }
+.sketch--process .pr-s2 { transform: translateY(83.3px); }
+
+.sketch--process .pr-imp {
+  transform-box: view-box;
+  transform-origin: 180px 224px;
+}
+
+.sketch--process .pr-rot,
+.sketch--process .pr-disc {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.sketch--process .pr-flow {
+  fill: none;
+  stroke: var(--sk-blue);
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-dasharray: 3 9;
+  vector-effect: none;
+  opacity: 0;
+}
+
+.sketch--process.sketch[data-run="1"] .pr-l1 { animation: pr-l1 var(--cyc) ease-in-out calc(var(--loop) + var(--l, 0s)) infinite both; }
+.sketch--process.sketch[data-run="1"] .pr-l2 { animation: pr-l2 var(--cyc) ease-in-out calc(var(--loop) + var(--l, 0s)) infinite both; }
+.sketch--process.sketch[data-run="1"] .pr-s1 { animation: pr-s1 var(--cyc) ease-in-out calc(var(--loop) + var(--l, 0s)) infinite both; }
+.sketch--process.sketch[data-run="1"] .pr-s2 { animation: pr-s2 var(--cyc) ease-in-out calc(var(--loop) + var(--l, 0s)) infinite both; }
+.sketch--process.sketch[data-run="1"] .pr-imp,
+.sketch--process.sketch[data-run="1"] .pr-rot { animation: pr-spin var(--cyc) linear calc(var(--loop) + var(--l, 0s)) infinite both; }
+.sketch--process.sketch[data-run="1"] .pr-v1 { animation: pr-v1 var(--cyc) ease-in-out calc(var(--loop) + var(--l, 0s)) infinite both; }
+.sketch--process.sketch[data-run="1"] .pr-v23 { animation: pr-v23 var(--cyc) ease-in-out calc(var(--loop) + var(--l, 0s)) infinite both; }
+.sketch--process.sketch[data-run="1"] .pr-flow--a { animation: pr-flow-a var(--cyc) linear calc(var(--loop) + var(--l, 0s)) infinite both; }
+.sketch--process.sketch[data-run="1"] .pr-flow--b { animation: pr-flow-b var(--cyc) linear calc(var(--loop) + var(--l, 0s)) infinite both; }
+
+@keyframes pr-l1 {
+  0% { transform: scaleY(0.85); }
+  48%, 52% { transform: scaleY(0.35); }
+  98%, 100% { transform: scaleY(0.85); }
+}
+
+@keyframes pr-s1 {
+  0% { transform: translateY(17.9px); }
+  48%, 52% { transform: translateY(77.4px); }
+  98%, 100% { transform: translateY(17.9px); }
+}
+
+@keyframes pr-l2 {
+  0% { transform: scaleY(0.3); }
+  48%, 52% { transform: scaleY(0.8); }
+  98%, 100% { transform: scaleY(0.3); }
+}
+
+@keyframes pr-s2 {
+  0% { transform: translateY(83.3px); }
+  48%, 52% { transform: translateY(23.8px); }
+  98%, 100% { transform: translateY(83.3px); }
+}
+
+/* spin up, run, spin down; 810deg ends on the 4-fold symmetry */
+@keyframes pr-spin {
+  0% { transform: rotate(0deg); }
+  6% { transform: rotate(45deg); }
+  42% { transform: rotate(765deg); }
+  50%, 100% { transform: rotate(810deg); }
+}
+
+@keyframes pr-v1 {
+  0%, 46% { transform: rotate(0deg); }
+  50%, 96% { transform: rotate(90deg); }
+  100% { transform: rotate(0deg); }
+}
+
+@keyframes pr-v23 {
+  0%, 46% { transform: rotate(0deg); }
+  50%, 96% { transform: rotate(-90deg); }
+  100% { transform: rotate(0deg); }
+}
+
+@keyframes pr-flow-a {
+  0% { opacity: 0; stroke-dashoffset: 0; }
+  3%, 45% { opacity: 1; }
+  48%, 100% { opacity: 0; stroke-dashoffset: -96; }
+}
+
+@keyframes pr-flow-b {
+  0%, 50% { opacity: 0; stroke-dashoffset: 0; }
+  53%, 95% { opacity: 1; }
+  98%, 100% { opacity: 0; stroke-dashoffset: -96; }
+}
+
+/* ===== testrig: press, compress the DUT, plot load vs time, PASS ===== */
+
+.sketch--testrig .tr-spring {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+}
+
+.sketch--testrig .tr-curve {
+  fill: none;
+  stroke: var(--sk-blue);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1 1;
+  stroke-dashoffset: 1;
+  vector-effect: none;
+  opacity: 0;
+}
+
+.sketch--testrig .tr-dot {
+  fill: var(--sk-red);
+  stroke: none;
+}
+
+.sketch--testrig .tr-peak,
+.sketch--testrig .tr-pass,
+.sketch--testrig .tr-air,
+.sketch--testrig .tr-sig {
+  opacity: 0;
+}
+
+.sketch--testrig .tr-pass {
+  fill: var(--sk-blue);
+  stroke: none;
+}
+
+.sketch--testrig .tr-air {
+  fill: none;
+  stroke: var(--sk-blue);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-dasharray: 0.25 1.5;
+  stroke-dashoffset: 0.25;
+  vector-effect: none;
+}
+
+.sketch--testrig .tr-sig {
+  fill: none;
+  stroke: var(--sk-blue);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-dasharray: 2 6;
+  vector-effect: none;
+}
+
+.sketch--testrig.sketch[data-run="1"] .tr-ram { animation: tr-ram var(--cyc) ease-in-out calc(var(--loop) + var(--l, 0s)) infinite both; }
+.sketch--testrig.sketch[data-run="1"] .tr-plat { animation: tr-plat var(--cyc) ease-in-out calc(var(--loop) + var(--l, 0s)) infinite both; }
+.sketch--testrig.sketch[data-run="1"] .tr-spring { animation: tr-spring var(--cyc) ease-in-out calc(var(--loop) + var(--l, 0s)) infinite both; }
+.sketch--testrig.sketch[data-run="1"] .tr-curve { animation: tr-curve var(--cyc) linear calc(var(--loop) + var(--l, 0s)) infinite both; }
+.sketch--testrig.sketch[data-run="1"] .tr-peak { animation: tr-peak var(--cyc) ease calc(var(--loop) + var(--l, 0s)) infinite both; }
+.sketch--testrig.sketch[data-run="1"] .tr-pass { animation: tr-pass var(--cyc) step-end calc(var(--loop) + var(--l, 0s)) infinite both; }
+.sketch--testrig.sketch[data-run="1"] .tr-air--in { animation: tr-air-in var(--cyc) linear calc(var(--loop) + var(--l, 0s)) infinite both; }
+.sketch--testrig.sketch[data-run="1"] .tr-air--out { animation: tr-air-out var(--cyc) linear calc(var(--loop) + var(--l, 0s)) infinite both; }
+.sketch--testrig.sketch[data-run="1"] .tr-sig { animation: tr-sig var(--cyc) linear calc(var(--loop) + var(--l, 0s)) infinite both; }
+
+/* tip touches the platen at 12px (26%), full stroke 24px (40%) */
+@keyframes tr-ram {
+  0%, 10% { transform: translateY(0); }
+  26% { transform: translateY(12px); }
+  40%, 55% { transform: translateY(24px); }
+  64% { transform: translateY(12px); }
+  75%, 100% { transform: translateY(0); }
+}
+
+@keyframes tr-plat {
+  0%, 26% { transform: translateY(0); }
+  40%, 55% { transform: translateY(12px); }
+  64%, 100% { transform: translateY(0); }
+}
+
+@keyframes tr-spring {
+  0%, 26% { transform: scaleY(1); }
+  40%, 55% { transform: scaleY(0.5); }
+  64%, 100% { transform: scaleY(1); }
+}
+
+/* dash offsets follow the curve's arc length so the pen keeps time with the ram */
+@keyframes tr-curve {
+  0%, 9.9% { stroke-dashoffset: 1; opacity: 0; }
+  10% { stroke-dashoffset: 1; opacity: 1; }
+  26% { stroke-dashoffset: 0.88; }
+  40% { stroke-dashoffset: 0.53; }
+  55% { stroke-dashoffset: 0.417; }
+  64% { stroke-dashoffset: 0.083; }
+  75%, 88% { stroke-dashoffset: 0; opacity: 1; }
+  96%, 100% { stroke-dashoffset: 0; opacity: 0; }
+}
+
+@keyframes tr-peak {
+  0%, 40% { opacity: 0; }
+  43%, 90% { opacity: 1; }
+  95%, 100% { opacity: 0; }
+}
+
+@keyframes tr-pass {
+  0% { opacity: 0; }
+  66% { opacity: 1; }
+  71% { opacity: 0.15; }
+  74% { opacity: 1; }
+  90% { opacity: 0; }
+  100% { opacity: 0; }
+}
+
+@keyframes tr-air-in {
+  0%, 10% { stroke-dashoffset: 0.25; opacity: 0; }
+  11% { opacity: 1; }
+  24% { stroke-dashoffset: -1; opacity: 1; }
+  25%, 100% { stroke-dashoffset: -1; opacity: 0; }
+}
+
+@keyframes tr-air-out {
+  0%, 55% { stroke-dashoffset: 0.25; opacity: 0; }
+  56% { opacity: 1; }
+  66% { stroke-dashoffset: -1; opacity: 1; }
+  67%, 100% { stroke-dashoffset: -1; opacity: 0; }
+}
+
+@keyframes tr-sig {
+  0%, 26% { opacity: 0; stroke-dashoffset: 0; }
+  28%, 62% { opacity: 1; }
+  66%, 100% { opacity: 0; stroke-dashoffset: -64; }
+}
+
+/* ===== robotics: home, pick from the in-feed, place on the pallet, home ===== */
+
+.sketch--robotics .ro-j2,
+.sketch--robotics .ro-j3,
+.sketch--robotics .ro-j5 {
+  transform-box: view-box;
+}
+
+.sketch--robotics .ro-j2 { transform-origin: 200px 220px; }
+.sketch--robotics .ro-j3 { transform-origin: 200px 142px; }
+.sketch--robotics .ro-j5 { transform-origin: 270px 142px; }
+
+.sketch--robotics .ro-box-held,
+.sketch--robotics .ro-box-out,
+.sketch--robotics .ro-grip {
+  opacity: 0;
+}
+
+.sketch--robotics .ro-grip__core {
+  fill: var(--sk-red);
+  fill-opacity: 0.55;
+  stroke: none;
+}
+
+.sketch--robotics .ro-trace {
+  fill: none;
+  stroke: currentColor;
+  stroke-opacity: 0.4;
+  stroke-width: 1.2;
+  stroke-linecap: round;
+  stroke-dasharray: 0.1 4;
+  vector-effect: none;
+}
+
+.sketch--robotics .ro-belt {
+  stroke-dasharray: 4 6;
+}
+
+.sketch--robotics .ro-curtain {
+  fill: none;
+  stroke: var(--sk-red);
+  stroke-opacity: 0.75;
+  stroke-width: 1.2;
+  stroke-dasharray: 2 4;
+  vector-effect: none;
+}
+
+.sketch--robotics .ro-led {
+  fill: var(--sk-blue);
+  stroke: none;
+}
+
+.sketch--robotics.sketch[data-run="1"] .ro-j2 { animation: ro-j2 var(--cyc) ease-in-out calc(var(--loop) + var(--l, 0s)) infinite both; }
+.sketch--robotics.sketch[data-run="1"] .ro-j3 { animation: ro-j3 var(--cyc) ease-in-out calc(var(--loop) + var(--l, 0s)) infinite both; }
+.sketch--robotics.sketch[data-run="1"] .ro-j5 { animation: ro-j5 var(--cyc) ease-in-out calc(var(--loop) + var(--l, 0s)) infinite both; }
+.sketch--robotics.sketch[data-run="1"] .ro-box-in { animation: ro-box-in var(--cyc) linear calc(var(--loop) + var(--l, 0s)) infinite both; }
+.sketch--robotics.sketch[data-run="1"] .ro-box-held { animation: ro-box-held var(--cyc) linear calc(var(--loop) + var(--l, 0s)) infinite both; }
+.sketch--robotics.sketch[data-run="1"] .ro-box-out { animation: ro-box-out var(--cyc) linear calc(var(--loop) + var(--l, 0s)) infinite both; }
+.sketch--robotics.sketch[data-run="1"] .ro-grip { animation: ro-grip var(--cyc) ease-out calc(var(--loop) + var(--l, 0s)) infinite both; }
+.sketch--robotics.sketch[data-run="1"] .ro-belt { animation: ro-belt var(--cyc) linear calc(var(--loop) + var(--l, 0s)) infinite both; }
+.sketch--robotics.sketch[data-run="1"] .ro-curtain { animation: ro-curtain var(--cyc) linear calc(var(--loop) + var(--l, 0s)) infinite both; }
+.sketch--robotics.sketch[data-run="1"] .ro-led { animation: sk-blink calc(var(--cyc) / 5) steps(1) calc(var(--loop) + var(--l, 0s)) infinite both; }
+
+/* joint angles from a two-link IK solve (wrist = -(shoulder + elbow), tool stays vertical):
+   home 0% | above pick 14% | pick 22-26% | above pick 34% | above place 54% | place 62-66% | above place 74% | home 92% */
+@keyframes ro-j2 {
+  0% { transform: rotate(0deg); }
+  14%, 34% { transform: rotate(-17.5deg); }
+  22%, 26% { transform: rotate(-16.4deg); }
+  54%, 74% { transform: rotate(30.9deg); }
+  62%, 66% { transform: rotate(37deg); }
+  92%, 100% { transform: rotate(0deg); }
+}
+
+@keyframes ro-j3 {
+  0% { transform: rotate(0deg); }
+  14%, 34% { transform: rotate(-144.6deg); }
+  22%, 26% { transform: rotate(-177.5deg); }
+  54%, 74% { transform: rotate(-33.4deg); }
+  62%, 66% { transform: rotate(-11.3deg); }
+  92%, 100% { transform: rotate(0deg); }
+}
+
+@keyframes ro-j5 {
+  0% { transform: rotate(0deg); }
+  14%, 34% { transform: rotate(162.1deg); }
+  22%, 26% { transform: rotate(193.9deg); }
+  54%, 74% { transform: rotate(2.5deg); }
+  62%, 66% { transform: rotate(-25.7deg); }
+  92%, 100% { transform: rotate(0deg); }
+}
+
+@keyframes ro-box-in {
+  0%, 23.9% { opacity: 1; transform: translateX(0); }
+  24%, 76% { opacity: 0; transform: translateX(-70px); }
+  79% { opacity: 1; }
+  92%, 100% { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes ro-box-held {
+  0%, 23.9% { opacity: 0; }
+  24%, 63.9% { opacity: 1; }
+  64%, 100% { opacity: 0; }
+}
+
+@keyframes ro-box-out {
+  0%, 63.9% { opacity: 0; }
+  64%, 94% { opacity: 1; }
+  99%, 100% { opacity: 0; }
+}
+
+@keyframes ro-grip {
+  0%, 21% { opacity: 0; }
+  22% { opacity: 1; }
+  27%, 61% { opacity: 0; }
+  62% { opacity: 1; }
+  67%, 100% { opacity: 0; }
+}
+
+@keyframes ro-belt {
+  0%, 76% { stroke-dashoffset: 0; }
+  92%, 100% { stroke-dashoffset: -30; }
+}
+
+@keyframes ro-curtain {
+  0% { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: -24; }
+}
+
+/* ===== andon: run, stop event sent to board and tablet, ACK, back to run ===== */
+
+.sketch--andon .an-lamp,
+.sketch--andon .an-stop,
+.sketch--andon .an-alert,
+.sketch--andon .an-ackbtn,
+.sketch--andon .an-arc,
+.sketch--andon .an-pkt {
+  opacity: 0;
+}
+
+.sketch--andon .an-blue {
+  opacity: 1;
+}
+
+.sketch--andon .an-fill {
+  stroke: none;
+  fill-opacity: 0.45;
+}
+
+.sketch--andon .an-fill--red { fill: var(--sk-red); }
+.sketch--andon .an-fill--blue { fill: var(--sk-blue); }
+.sketch--andon .an-fill--white { fill: currentColor; fill-opacity: 0.3; }
+
+.sketch--andon .an-digit,
+.sketch--andon .an-status {
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  fill: currentColor;
+  stroke: none;
+}
+
+.sketch--andon .an-digit {
+  font-size: 12px;
+  fill-opacity: 0.85;
+}
+
+.sketch--andon .an-status {
+  font-size: 10px;
+  letter-spacing: 0.08em;
+}
+
+.sketch--andon .an-run { fill: var(--sk-blue); }
+.sketch--andon .an-stop { fill: var(--sk-red); }
+
+.sketch--andon .an-win {
+  overflow: hidden;
+}
+
+.sketch--andon .an-ackbtn {
+  fill: var(--sk-blue);
+  fill-opacity: 0.35;
+  stroke: none;
+}
+
+.sketch--andon .an-pkt {
+  fill: none;
+  stroke: var(--sk-red);
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-dasharray: 0.1 2;
+  stroke-dashoffset: 0.1;
+  vector-effect: none;
+}
+
+.sketch--andon .an-pkt--ack {
+  stroke: var(--sk-blue);
+}
+
+.sketch--andon.sketch[data-run="1"] .an-blue { animation: an-blue var(--cyc) step-end calc(var(--loop) + var(--l, 0s)) infinite both; }
+.sketch--andon.sketch[data-run="1"] .an-red { animation: an-red var(--cyc) step-end calc(var(--loop) + var(--l, 0s)) infinite both; }
+.sketch--andon.sketch[data-run="1"] .an-white { animation: an-white var(--cyc) step-end calc(var(--loop) + var(--l, 0s)) infinite both; }
+.sketch--andon.sketch[data-run="1"] .an-run { animation: an-run var(--cyc) step-end calc(var(--loop) + var(--l, 0s)) infinite both; }
+.sketch--andon.sketch[data-run="1"] .an-stop { animation: an-stop var(--cyc) step-end calc(var(--loop) + var(--l, 0s)) infinite both; }
+.sketch--andon.sketch[data-run="1"] .an-alert { animation: an-alert var(--cyc) linear calc(var(--loop) + var(--l, 0s)) infinite both; }
+.sketch--andon.sketch[data-run="1"] .an-ackbtn { animation: an-ackbtn var(--cyc) linear calc(var(--loop) + var(--l, 0s)) infinite both; }
+.sketch--andon.sketch[data-run="1"] .an-arc--box { animation: an-arc-box var(--cyc) ease-out calc(var(--loop) + var(--l, 0s)) infinite both; }
+.sketch--andon.sketch[data-run="1"] .an-arc--tab { animation: an-arc-tab var(--cyc) ease-out calc(var(--loop) + var(--l, 0s)) infinite both; }
+.sketch--andon.sketch[data-run="1"] .an-pkt--board { animation: an-pkt-board var(--cyc) linear calc(var(--loop) + var(--l, 0s)) infinite both; }
+.sketch--andon.sketch[data-run="1"] .an-pkt--tab { animation: an-pkt-tab var(--cyc) linear calc(var(--loop) + var(--l, 0s)) infinite both; }
+.sketch--andon.sketch[data-run="1"] .an-pkt--ack { animation: an-pkt-ack var(--cyc) linear calc(var(--loop) + var(--l, 0s)) infinite both; }
+/* the ACTUAL counter's ones digit rolls once per cycle (during RUN), over ten cycles */
+.sketch--andon.sketch[data-run="1"] .an-strip { animation: an-strip calc(var(--cyc) * 10) ease-in-out calc(var(--loop) + var(--l, 0s)) infinite both; }
+
+@keyframes an-blue {
+  0% { opacity: 1; }
+  44% { opacity: 0; }
+  90%, 100% { opacity: 1; }
+}
+
+@keyframes an-red {
+  0% { opacity: 0; }
+  46% { opacity: 1; }
+  52% { opacity: 0.1; }
+  54% { opacity: 1; }
+  60% { opacity: 0.1; }
+  62% { opacity: 1; }
+  68% { opacity: 0.1; }
+  70% { opacity: 1; }
+  76% { opacity: 0.1; }
+  78% { opacity: 1; }
+  84%, 100% { opacity: 0; }
+}
+
+@keyframes an-white {
+  0% { opacity: 0; }
+  85% { opacity: 1; }
+  90%, 100% { opacity: 0; }
+}
+
+@keyframes an-run {
+  0% { opacity: 1; }
+  52% { opacity: 0; }
+  88%, 100% { opacity: 1; }
+}
+
+@keyframes an-stop {
+  0% { opacity: 0; }
+  52% { opacity: 1; }
+  88%, 100% { opacity: 0; }
+}
+
+@keyframes an-alert {
+  0%, 56% { opacity: 0; }
+  57%, 86% { opacity: 1; }
+  89%, 100% { opacity: 0; }
+}
+
+@keyframes an-ackbtn {
+  0%, 76% { opacity: 0; }
+  77% { opacity: 1; }
+  82%, 100% { opacity: 0; }
+}
+
+@keyframes an-arc-box {
+  0%, 46% { opacity: 0; }
+  47% { opacity: 1; }
+  54%, 100% { opacity: 0; }
+}
+
+@keyframes an-arc-tab {
+  0%, 77% { opacity: 0; }
+  78% { opacity: 1; }
+  85%, 100% { opacity: 0; }
+}
+
+@keyframes an-pkt-board {
+  0%, 46% { stroke-dashoffset: 0.1; opacity: 0; }
+  46.5% { opacity: 1; }
+  52% { stroke-dashoffset: -1; opacity: 1; }
+  52.1%, 100% { stroke-dashoffset: -1; opacity: 0; }
+}
+
+@keyframes an-pkt-tab {
+  0%, 46% { stroke-dashoffset: 0.1; opacity: 0; }
+  46.5% { opacity: 1; }
+  56% { stroke-dashoffset: -1; opacity: 1; }
+  56.1%, 100% { stroke-dashoffset: -1; opacity: 0; }
+}
+
+@keyframes an-pkt-ack {
+  0%, 77% { stroke-dashoffset: 0.1; opacity: 0; }
+  77.5% { opacity: 1; }
+  85% { stroke-dashoffset: -1; opacity: 1; }
+  85.1%, 100% { stroke-dashoffset: -1; opacity: 0; }
+}
+
+@keyframes an-strip {
+  0%, 3% { transform: translateY(0); }
+  3.4%, 13% { transform: translateY(-14px); }
+  13.4%, 23% { transform: translateY(-28px); }
+  23.4%, 33% { transform: translateY(-42px); }
+  33.4%, 43% { transform: translateY(-56px); }
+  43.4%, 53% { transform: translateY(-70px); }
+  53.4%, 63% { transform: translateY(-84px); }
+  63.4%, 73% { transform: translateY(-98px); }
+  73.4%, 83% { transform: translateY(-112px); }
+  83.4%, 93% { transform: translateY(-126px); }
+  93.4%, 100% { transform: translateY(-140px); }
+}
+
+/* ===== wireless: each node transmits in turn (1s slots), packets hop to AP-1 ===== */
+
+.sketch--wireless .wl-ring {
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.sketch--wireless .wl-pkt {
+  fill: none;
+  stroke: var(--sk-blue);
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-dasharray: 0.08 2;
+  stroke-dashoffset: 0.08;
+  vector-effect: none;
+  opacity: 0;
+}
+
+.sketch--wireless .wl-pkt--eth {
+  stroke: var(--sk-red);
+  stroke-dasharray: 0.2 2;
+}
+
+.sketch--wireless .wl-flash {
+  fill: var(--sk-blue);
+  stroke: none;
+  opacity: 0;
+}
+
+.sketch--wireless .wl-flash--red {
+  fill: var(--sk-red);
+}
+
+.sketch--wireless .wl-bar {
+  fill: var(--sk-blue);
+  stroke: none;
+  opacity: 0.9;
+}
+
+.sketch--wireless .wl-bar--5 {
+  opacity: 0.15;
+}
+
+.sketch--wireless.sketch[data-run="1"] .wl-ring { animation: wl-ring var(--cyc) ease-out calc(var(--loop) + var(--l, 0s)) infinite both; }
+.sketch--wireless.sketch[data-run="1"] .wl-pkt { animation: wl-pkt var(--cyc) linear calc(var(--loop) + var(--l, 0s)) infinite both; }
+.sketch--wireless.sketch[data-run="1"] .wl-flash { animation: wl-flash var(--cyc) ease-out calc(var(--loop) + var(--l, 0s)) infinite both; }
+.sketch--wireless.sketch[data-run="1"] .wl-bar--3 { animation: wl-b3 var(--cyc) step-end calc(var(--loop) + var(--l, 0s)) infinite both; }
+.sketch--wireless.sketch[data-run="1"] .wl-bar--4 { animation: wl-b4 var(--cyc) step-end calc(var(--loop) + var(--l, 0s)) infinite both; }
+.sketch--wireless.sketch[data-run="1"] .wl-bar--5 { animation: wl-b5 var(--cyc) step-end calc(var(--loop) + var(--l, 0s)) infinite both; }
+
+@keyframes wl-ring {
+  0% { opacity: 0; transform: scale(0.4); }
+  2% { opacity: 0.9; }
+  16%, 100% { opacity: 0; transform: scale(2.4); }
+}
+
+/* leaves 0.15s after the ring, arrives 0.75s into its slot */
+@keyframes wl-pkt {
+  0%, 3% { stroke-dashoffset: 0.08; opacity: 0; }
+  3.5% { opacity: 1; }
+  15% { stroke-dashoffset: -1; opacity: 1; }
+  15.1%, 100% { stroke-dashoffset: -1; opacity: 0; }
+}
+
+@keyframes wl-flash {
+  0% { opacity: 0; }
+  1% { opacity: 1; }
+  8%, 100% { opacity: 0; }
+}
+
+/* RSSI per received packet: 4, 3, 5, 2, 4 bars (updates at 15/35/55/75/95%) */
+@keyframes wl-b3 {
+  0% { opacity: 0.9; }
+  75% { opacity: 0.15; }
+  95%, 100% { opacity: 0.9; }
+}
+
+@keyframes wl-b4 {
+  0% { opacity: 0.9; }
+  35% { opacity: 0.15; }
+  55% { opacity: 0.9; }
+  75% { opacity: 0.15; }
+  95%, 100% { opacity: 0.9; }
+}
+
+@keyframes wl-b5 {
+  0% { opacity: 0.15; }
+  55% { opacity: 0.9; }
+  75%, 100% { opacity: 0.15; }
+}
+
+/* ===== embedded: coin passes the Hall sensor, I2C read, SPI to LCD, heartbeat ===== */
+
+.sketch--embedded .em-pin {
+  fill: currentColor;
+  fill-opacity: 0.7;
+  stroke: none;
+}
+
+.sketch--embedded .em-coin,
+.sketch--embedded .em-hall,
+.sketch--embedded .em-bus,
+.sketch--embedded .em-ok,
+.sketch--embedded .em-hb {
+  opacity: 0;
+}
+
+.sketch--embedded .em-hall {
+  fill: var(--sk-blue);
+  fill-opacity: 0.45;
+  stroke: none;
+}
+
+.sketch--embedded .em-field {
+  opacity: 0.3;
+}
+
+.sketch--embedded .em-bus {
+  fill: none;
+  stroke: var(--sk-blue);
+  stroke-width: 2.2;
+  stroke-linecap: butt;
+  vector-effect: none;
+}
+
+.sketch--embedded .em-sda { stroke-dasharray: 0.05 0.03 0.02 0.06; }
+.sketch--embedded .em-scl { stroke-dasharray: 0.03 0.03; stroke-opacity: 0.7; }
+.sketch--embedded .em-mosi { stroke: var(--sk-red); stroke-dasharray: 0.2 0.1 0.1 0.15; }
+.sketch--embedded .em-sck { stroke-dasharray: 0.18 0.17; stroke-opacity: 0.7; }
+
+.sketch--embedded .em-wave {
+  fill: none;
+  stroke: var(--sk-blue);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-dasharray: 1 1;
+  stroke-dashoffset: 1;
+  vector-effect: none;
+  opacity: 0;
+}
+
+.sketch--embedded .em-ok {
+  fill: var(--sk-blue);
+  fill-opacity: 0.95;
+}
+
+.sketch--embedded .em-hb {
+  fill: var(--sk-red);
+  stroke: none;
+}
+
+.sketch--embedded.sketch[data-run="1"] .em-coin { animation: em-coin var(--cyc) linear calc(var(--loop) + var(--l, 0s)) infinite both; }
+.sketch--embedded.sketch[data-run="1"] .em-hall { animation: em-hall var(--cyc) ease-out calc(var(--loop) + var(--l, 0s)) infinite both; }
+.sketch--embedded.sketch[data-run="1"] .em-field { animation: em-field var(--cyc) ease-out calc(var(--loop) + var(--l, 0s)) infinite both; }
+.sketch--embedded.sketch[data-run="1"] .em-sda,
+.sketch--embedded.sketch[data-run="1"] .em-scl { animation: em-i2c var(--cyc) linear calc(var(--loop) + var(--l, 0s)) infinite both; }
+.sketch--embedded.sketch[data-run="1"] .em-mosi,
+.sketch--embedded.sketch[data-run="1"] .em-sck { animation: em-spi var(--cyc) linear calc(var(--loop) + var(--l, 0s)) infinite both; }
+.sketch--embedded.sketch[data-run="1"] .em-wave { animation: em-wave var(--cyc) linear calc(var(--loop) + var(--l, 0s)) infinite both; }
+.sketch--embedded.sketch[data-run="1"] .em-ok { animation: em-ok var(--cyc) ease calc(var(--loop) + var(--l, 0s)) infinite both; }
+.sketch--embedded.sketch[data-run="1"] .em-hb { animation: em-hb var(--cyc) step-end calc(var(--loop) + var(--l, 0s)) infinite both; }
+
+/* falls under gravity, crosses the sensor (cy 148) at 22% */
+@keyframes em-coin {
+  0% { opacity: 0; transform: translateY(0); }
+  3% { opacity: 1; }
+  14% { transform: translateY(60px); }
+  22% { transform: translateY(114px); }
+  30% { opacity: 1; transform: translateY(236px); }
+  31%, 100% { opacity: 0; transform: translateY(236px); }
+}
+
+@keyframes em-hall {
+  0%, 19% { opacity: 0; }
+  21% { opacity: 1; }
+  28%, 100% { opacity: 0; }
+}
+
+@keyframes em-field {
+  0%, 18% { opacity: 0.3; }
+  21% { opacity: 1; }
+  30%, 100% { opacity: 0.3; }
+}
+
+@keyframes em-i2c {
+  0%, 24% { opacity: 0; stroke-dashoffset: 0; }
+  25%, 37% { opacity: 1; }
+  38%, 100% { opacity: 0; stroke-dashoffset: -0.48; }
+}
+
+@keyframes em-spi {
+  0%, 38% { opacity: 0; stroke-dashoffset: 0; }
+  39%, 47% { opacity: 1; }
+  48%, 100% { opacity: 0; stroke-dashoffset: -1.05; }
+}
+
+@keyframes em-wave {
+  0%, 45.9% { stroke-dashoffset: 1; opacity: 0; }
+  46% { stroke-dashoffset: 1; opacity: 1; }
+  64%, 88% { stroke-dashoffset: 0; opacity: 1; }
+  95%, 100% { stroke-dashoffset: 0; opacity: 0; }
+}
+
+@keyframes em-ok {
+  0%, 64% { opacity: 0; }
+  67%, 88% { opacity: 1; }
+  95%, 100% { opacity: 0; }
+}
+
+/* lub-dub, twice per cycle */
+@keyframes em-hb {
+  0% { opacity: 1; }
+  3% { opacity: 0; }
+  7% { opacity: 1; }
+  10% { opacity: 0; }
+  50% { opacity: 1; }
+  53% { opacity: 0; }
+  57% { opacity: 1; }
+  60%, 100% { opacity: 0; }
+}
+
+/* ===== reduced motion: no loops; show the finished state of loop-only parts ===== */
+
+@media (prefers-reduced-motion: reduce) {
+  .sketch--process *,
+  .sketch--testrig *,
+  .sketch--robotics *,
+  .sketch--andon *,
+  .sketch--wireless *,
+  .sketch--embedded * {
+    animation: none !important;
+  }
+
+  .sketch--testrig .tr-curve,
+  .sketch--embedded .em-wave {
+    stroke-dashoffset: 0;
+  }
+
+  .sketch--testrig .tr-curve,
+  .sketch--embedded .em-wave,
+  .sketch--testrig .tr-peak,
+  .sketch--testrig .tr-pass,
+  .sketch--embedded .em-ok,
+  .sketch--embedded .em-hb,
+  .sketch--embedded .em-hall {
+    opacity: 1;
+  }
+
+  .sketch--embedded .em-coin {
+    opacity: 1;
+    transform: translateY(114px);
+  }
+}

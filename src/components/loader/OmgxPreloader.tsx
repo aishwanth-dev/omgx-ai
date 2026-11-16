@@ -1,151 +1,170 @@
 "use client";
-
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { LOGO_PATHS } from "@/components/layout/Logo";
-import { gsap, useGSAP } from "@/lib/gsap";
-import { markIntroDone, markReady, READINESS_LABELS, subscribeReadiness, type ReadinessTask } from "@/lib/readiness";
+import { LogoMark } from "@/components/layout/Logo";
+import { gsap } from "@/lib/gsap";
+import { isIntroDone, markIntroDone, subscribeReadiness } from "@/lib/readiness";
+import { startPreload } from "./startPreload";
+import "@/app/loader.css";
 
-const TASKS: ReadinessTask[] = ["document", "fonts", "scene"];
-const SEEN_KEY = "omgx-intro-seen";
-const MAX_WAIT_MS = 7000;
+const MAX_WAIT_MS = 12000;
+const HOLD_MS = 250;
+const LINES = [
+  { d: "M-20 -20 C 260 60, 420 380, 760 520 S 1200 640, 1480 700", tone: "blue" },
+  { d: "M300 -20 C 640 120, 900 380, 1200 470 S 1420 560, 1480 580", tone: "white" },
+  { d: "M700 -20 C 1000 80, 1250 250, 1480 520", tone: "red" },
+  { d: "M-20 360 C 300 420, 600 470, 860 700 S 1100 900, 1200 940", tone: "white" },
+  { d: "M80 -20 C 350 150, 520 520, 900 660 S 1300 780, 1480 840", tone: "soft" },
+] as const;
 
 /**
- * Original OMGX identity reveal. Progress is the real count of critical tasks
- * resolved (page hydrated, web fonts loaded, first WebGL frame rendered). It
- * never invents intermediate percentages, is shortened on repeat visits and
- * exits after MAX_WAIT_MS even if the 3D scene is still loading.
+ * The loader tracks real work (lib/readiness.ts, started by startPreload): fonts, the logo and
+ * poster, the hero GLB with its Draco decode, scene chunks, a WebGL warm-up and the first hero
+ * frame. The shown number eases toward the weighted progress, never goes backwards and reaches
+ * 100 only when everything is ready. It then holds 250 ms, plays the exit and starts the hero
+ * intro. After 12 s it finishes anyway; a failed asset counts as done. Scrolling is locked only
+ * while it is visible; without JS it is hidden by CSS.
  */
 export function OmgxPreloader() {
+  const router = useRouter();
   const root = useRef<HTMLDivElement>(null);
-  const [done, setDone] = useState<Set<ReadinessTask>>(new Set());
-  const [gone, setGone] = useState(false);
-  const exiting = useRef(false);
-  const drawn = useRef(false);
-  const repeat = useRef(false);
-  const exitRef = useRef<() => void>(() => {});
+  const brand = useRef<HTMLDivElement>(null);
+  const counter = useRef<HTMLDivElement>(null);
+  const num = useRef<HTMLSpanElement>(null);
+  const forced = useRef(false);
+  const [gone, setGone] = useState(() => isIntroDone());
+  const [announce, setAnnounce] = useState("Loading");
 
-  useEffect(() => {
-    const unsub = subscribeReadiness(setDone);
-    markReady("document");
-    if (document.fonts) document.fonts.ready.then(() => markReady("fonts"));
-    else markReady("fonts");
-    return unsub;
-  }, []);
-
-  useGSAP(
-    (_ctx, contextSafe) => {
-      const q = gsap.utils.selector(root);
-      repeat.current = sessionStorage.getItem(SEEN_KEY) === "1";
-      const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      document.body.classList.add("is-locked");
-
-      // Exit sequence: the mark expands and the overlay wipes up into the hero.
-      exitRef.current = contextSafe!(() => {
-        if (exiting.current) return;
-        exiting.current = true;
-        sessionStorage.setItem(SEEN_KEY, "1");
-        const finish = () => {
-          document.body.classList.remove("is-locked");
-          markIntroDone();
-          setGone(true);
-        };
-        if (reduced) {
-          gsap.to(root.current, { autoAlpha: 0, duration: 0.3, onComplete: finish });
-          return;
-        }
-        gsap
-          .timeline({ onComplete: finish })
-          .to(q(".loader__mark"), { scale: 9, autoAlpha: 0, duration: 0.7, ease: "expo.in" }, 0)
-          .to(q(".loader__word, .loader__meta, .loader__splines"), { autoAlpha: 0, duration: 0.3 }, 0)
-          .to(root.current, { clipPath: "inset(0 0 100% 0)", duration: 0.7, ease: "expo.inOut" }, 0.3);
-      });
-
-      if (reduced || repeat.current) {
-        gsap.set(q(".loader__draw"), { strokeDashoffset: 0 });
-        gsap.set(q(".loader__node, .loader__word, .loader__meta"), { autoAlpha: 1 });
-        drawn.current = true;
-        return;
-      }
-      gsap
-        .timeline({ onComplete: () => void (drawn.current = true) })
-        .fromTo(q(".loader__ring"), { strokeDashoffset: 82 }, { strokeDashoffset: 0, duration: 0.9, ease: "power2.inOut" })
-        .fromTo(q(".loader__path"), { strokeDashoffset: 46 }, { strokeDashoffset: 0, duration: 0.7, ease: "power2.out", stagger: 0.12 }, 0.35)
-        .fromTo(q(".loader__node"), { autoAlpha: 0, scale: 0 }, { autoAlpha: 1, scale: 1, duration: 0.4, stagger: 0.05, transformOrigin: "50% 50%" }, 0.8)
-        .fromTo(q(".loader__spline"), { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 1.4, ease: "power2.out", stagger: 0.08 }, 0.4)
-        .fromTo(q(".loader__word"), { autoAlpha: 0, y: 14 }, { autoAlpha: 1, y: 0, duration: 0.6, ease: "expo.out" }, 1.0)
-        .fromTo(q(".loader__meta"), { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.4 }, 0.2);
-    },
-    { scope: root },
-  );
-
-  // Exit when every task is ready and the mark has finished drawing, or after the safety timeout.
   useEffect(() => {
     if (gone) return;
-    const allReady = TASKS.every((t) => done.has(t));
-    let poll: number | undefined;
-    if (allReady) {
-      const tryExit = () => {
-        if (drawn.current) exitRef.current();
-        else poll = window.setTimeout(tryExit, 80);
-      };
-      tryExit();
-    }
-    return () => {
-      if (poll) window.clearTimeout(poll);
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    document.body.classList.add("is-locked");
+    let snap = { progress: 0, pending: [] as string[], complete: false };
+    const unsub = subscribeReadiness((s) => {
+      snap = s;
+    });
+    startPreload((href) => router.prefetch(href));
+
+    let shown = 0;
+    let lastInt = -1;
+    let lastMilestone = -1;
+    let exiting = false;
+    let raf = 0;
+    let hold = 0;
+    let tl: gsap.core.Timeline | null = null;
+    const t0 = performance.now();
+    let last = t0;
+
+    const finish = () => {
+      document.body.classList.remove("is-locked");
+      markIntroDone();
+      setGone(true);
     };
-  }, [done, gone]);
+    const exit = (fast: boolean) => {
+      if (reduced || fast) {
+        tl = gsap.timeline({ onComplete: finish }).to(root.current, { autoAlpha: 0, duration: fast ? 0.2 : 0.3 });
+        return;
+      }
+      tl = gsap
+        .timeline({ onComplete: finish })
+        .to(brand.current, { scale: 1.18, autoAlpha: 0, duration: 0.55, ease: "expo.in" }, 0)
+        .to(counter.current, { autoAlpha: 0, y: 12, duration: 0.35, ease: "power2.in" }, 0)
+        .to(root.current, { clipPath: "inset(0 0 100% 0)", duration: 0.7, ease: "expo.inOut" }, 0.2);
+    };
 
-  // Safety net: never hold the page for longer than MAX_WAIT_MS.
-  useEffect(() => {
-    const timeout = window.setTimeout(() => exitRef.current(), MAX_WAIT_MS);
-    return () => window.clearTimeout(timeout);
-  }, []);
+    const tick = (now: number) => {
+      const dt = Math.min(0.1, (now - last) / 1000);
+      last = now;
+      const skip = forced.current;
+      const target = skip || now - t0 > MAX_WAIT_MS || snap.complete ? 100 : Math.min(99, snap.progress * 100);
+      if (target > shown) shown = Math.min(target, shown + Math.max((target - shown) * (1 - Math.exp(-dt * 6)), dt * 0.4));
+      if (target === 100 && 100 - shown < 0.4) shown = 100;
+      if (skip) shown = 100;
+      const int = shown >= 100 ? 100 : Math.min(99, Math.floor(shown));
+      if (int !== lastInt) {
+        lastInt = int;
+        if (num.current) num.current.textContent = String(int).padStart(3, "0");
+        counter.current?.setAttribute("aria-valuenow", String(int));
+        const m = int === 100 ? 100 : Math.floor(int / 25) * 25;
+        if (m !== lastMilestone) {
+          lastMilestone = m;
+          setAnnounce(m === 100 ? "Loaded" : m === 0 ? "Loading" : `Loading, ${m} percent`);
+        }
+      }
+      if (int === 100 && !exiting) {
+        exiting = true;
+        if (skip) exit(true);
+        else hold = window.setTimeout(() => exit(false), HOLD_MS);
+        return;
+      }
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
 
-  useEffect(() => () => document.body.classList.remove("is-locked"), []);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.clearTimeout(hold);
+      tl?.kill();
+      unsub();
+      document.body.classList.remove("is-locked");
+    };
+  }, [gone, router]);
 
   if (gone) return null;
-
-  const count = TASKS.filter((t) => done.has(t)).length;
-  const pending = TASKS.find((t) => !done.has(t));
-  const pct = Math.round((count / TASKS.length) * 100);
-
   return (
-    <div ref={root} className="loader" data-theme="dark">
-      <svg className="loader__splines" viewBox="0 0 1600 900" preserveAspectRatio="none" aria-hidden="true">
-        {[
-          "M-40 120 C 360 220, 620 420, 800 450 S 1300 720, 1660 820",
-          "M-40 760 C 300 640, 640 520, 800 450 S 1240 160, 1660 60",
-          "M200 -40 C 380 220, 640 380, 800 450 S 1100 760, 1180 960",
-          "M1640 300 C 1300 360, 1000 420, 800 450 S 280 520, -40 600",
-        ].map((d, i) => (
-          <path key={i} className="loader__spline" d={d} pathLength={1} strokeDasharray="1 1" />
+    <div ref={root} className="omx-loader" data-theme="dark" aria-busy="true">
+      <svg className="omx-loader__lines" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        {LINES.map((l, i) => (
+          <path
+            key={`l${i}`}
+            className={`omx-loader__line omx-loader__line--${l.tone}`}
+            d={l.d}
+            pathLength={1}
+            style={{ animationDelay: `${i * 0.15}s` }}
+          />
+        ))}
+        {LINES.map((l, i) => (
+          <path
+            key={`p${i}`}
+            className={`omx-loader__pulse omx-loader__pulse--${l.tone === "red" ? "red" : l.tone === "white" ? "white" : "blue"}`}
+            d={l.d}
+            pathLength={1}
+            style={{ animationDelay: `${1.2 + i * 0.7}s`, animationDuration: `${3.2 + (i % 3) * 0.6}s` }}
+          />
         ))}
       </svg>
-      <div className="loader__center">
-        <svg className="loader__mark" viewBox="0 0 40 40" width="96" height="96" fill="none" aria-hidden="true">
-          <path className="loader__draw loader__ring" d={LOGO_PATHS.ring} stroke="#fff" strokeWidth="1.4" strokeDasharray="82" />
-          <path className="loader__draw loader__path" d={LOGO_PATHS.pathA} stroke="#00e89a" strokeWidth="1.4" strokeLinecap="round" strokeDasharray="46" />
-          <path className="loader__draw loader__path" d={LOGO_PATHS.pathB} stroke="#00e89a" strokeWidth="1.4" strokeLinecap="round" strokeDasharray="46" />
-          {LOGO_PATHS.nodes.map(([x, y]) => (
-            <circle key={`${x}-${y}`} className="loader__node" cx={x} cy={y} r="1.8" fill="#fff" />
-          ))}
-          <circle className="loader__node" cx="20" cy="20" r="2.2" fill="#00e89a" />
-        </svg>
-        <p className="loader__word">
-          OMGX <span>AI</span>
+      <div ref={brand} className="omx-loader__brand">
+        <p className="omx-loader__word" aria-hidden="true">
+          OMGX<span>AI</span>
         </p>
+        <LogoMark size={164} priority />
       </div>
-      <div className="loader__meta">
-        <p className="t-utility" role="status" aria-live="polite">
-          {pending ? `Loading ${READINESS_LABELS[pending].toLowerCase()} — ${count} of ${TASKS.length} ready` : "Ready"}
-        </p>
-        <p className="loader__count" aria-hidden="true">
-          {String(pct).padStart(3, "0")}
-        </p>
-        <button type="button" className="loader__skip t-utility" onClick={() => exitRef.current()}>
-          Skip intro
-        </button>
+      <div
+        ref={counter}
+        className="omx-loader__count"
+        role="progressbar"
+        aria-label="Loading OMGX AI"
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-valuenow={0}
+      >
+        <span ref={num} aria-hidden="true">
+          000
+        </span>
+        <small aria-hidden="true">%</small>
       </div>
+      <p className="omx-loader__sr" role="status" aria-live="polite">
+        {announce}
+      </p>
+      <button
+        type="button"
+        className="omx-loader__skip t-utility"
+        onClick={() => {
+          forced.current = true;
+        }}
+      >
+        Skip intro
+      </button>
     </div>
   );
 }

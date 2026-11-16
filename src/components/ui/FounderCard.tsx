@@ -1,7 +1,8 @@
 import Image from "next/image";
 import { founder } from "@/content/company";
+import { SocialLink } from "@/components/ui/SocialIcon";
 
-/** Founder introduction. Shows an approved photograph only; otherwise a neutral, labelled placeholder. */
+/** Founder introduction. Shows the photograph when one is set; otherwise the G monogram. */
 export function FounderCard({ detailed = false }: { detailed?: boolean }) {
   return (
     <article className={`founder${detailed ? " founder--detailed" : ""}`} aria-labelledby="founder-name">
@@ -13,7 +14,6 @@ export function FounderCard({ detailed = false }: { detailed?: boolean }) {
             <span className="founder__initial" aria-hidden="true">
               G
             </span>
-            <span className="visual-caption">Approved founder photograph to be supplied</span>
           </div>
         )}
       </div>
@@ -24,6 +24,9 @@ export function FounderCard({ detailed = false }: { detailed?: boolean }) {
         </h3>
         <p>{founder.intro}</p>
         {detailed && <p>{founder.detail}</p>}
+        <SocialLink href={founder.linkedin} icon="linkedin" label="Gururaj on LinkedIn" variant="pill">
+          LinkedIn
+        </SocialLink>
         {detailed && (
           <ul className="founder__list">
             {founder.experience.map((e) => (

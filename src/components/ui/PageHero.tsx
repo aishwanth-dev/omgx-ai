@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { RevealHeading } from "@/components/motion/RevealHeading";
+import { surfaceAttrs, themeSurface } from "@/lib/surfaces";
 
 export type Crumb = { label: string; href?: string };
 
@@ -26,7 +28,7 @@ export function PageHero({
   aside,
 }: {
   eyebrow: string;
-  title: React.ReactNode;
+  title: string | readonly string[];
   lead?: React.ReactNode;
   crumbs?: Crumb[];
   theme?: "dark" | "light";
@@ -34,13 +36,13 @@ export function PageHero({
   aside?: React.ReactNode;
 }) {
   return (
-    <section className={`page-hero${aside ? " page-hero--split" : ""}`} data-theme={theme}>
+    <section className={`page-hero${aside ? " page-hero--split" : ""}`} {...surfaceAttrs(themeSurface(theme))}>
       <div className="page-hero__glow" aria-hidden="true" />
       <div className="container page-hero__inner">
         <div className="page-hero__main">
           {crumbs && <Breadcrumbs items={crumbs} />}
           <p className="t-utility page-hero__eyebrow">{eyebrow}</p>
-          <h1 className="t-display-xl page-hero__title">{title}</h1>
+          <RevealHeading as="h1" className="t-display-xl page-hero__title" text={title} />
           {lead && <div className="t-lead page-hero__lead">{lead}</div>}
           {children}
         </div>
@@ -60,10 +62,10 @@ export function CTABand({
   theme?: "matcha" | "dark" | "light";
 }) {
   return (
-    <section className="cta-band" data-theme={theme}>
+    <section className="cta-band" {...surfaceAttrs(themeSurface(theme))}>
       <div className="container cta-band__inner">
         <div>
-          <h2 className="t-display cta-band__title">{title}</h2>
+          <RevealHeading className="t-display cta-band__title" text={title} />
           <p className="t-lead">{body}</p>
         </div>
         <Link href="/contact" className="btn btn--primary">

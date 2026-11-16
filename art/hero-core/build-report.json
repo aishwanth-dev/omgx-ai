@@ -1,0 +1,349 @@
+{
+  "blender": "5.2.4 LTS",
+  "engine": "BLENDER_EEVEE",
+  "nodeFile": "src/components/three/heroCoreNodes.json",
+  "nodeList": [
+    "Core",
+    "Ring_Inner",
+    "Ring_Mid",
+    "Ring_Outer",
+    "Ribbon",
+    "Node_00",
+    "Node_01",
+    "Node_02",
+    "Node_03",
+    "Node_04",
+    "Node_05",
+    "Node_06",
+    "Node_07",
+    "Node_08",
+    "Node_09",
+    "Node_10",
+    "Node_11",
+    "Trace_Inner",
+    "Trace_Mid",
+    "Trace_Outer",
+    "Path_00",
+    "Path_01",
+    "Path_02",
+    "Path_03"
+  ],
+  "models": {
+    "hero": {
+      "file": "public/models/hero-core.glb",
+      "bytes": 118788,
+      "kb": 116.0,
+      "triangles": 60512,
+      "nodes": [
+        "Core",
+        "Ribbon",
+        "Node_00",
+        "Node_01",
+        "Node_02",
+        "Path_00",
+        "Path_01",
+        "Path_02",
+        "Path_03",
+        "Trace_Inner",
+        "Ring_Inner",
+        "Node_03",
+        "Node_04",
+        "Node_05",
+        "Node_06",
+        "Trace_Mid",
+        "Ring_Mid",
+        "Node_07",
+        "Node_08",
+        "Node_09",
+        "Node_10",
+        "Node_11",
+        "Trace_Outer",
+        "Ring_Outer"
+      ],
+      "extensionsUsed": [
+        "KHR_draco_mesh_compression",
+        "KHR_materials_clearcoat",
+        "KHR_materials_emissive_strength"
+      ],
+      "extensionsRequired": [
+        "KHR_draco_mesh_compression"
+      ]
+    },
+    "heroLite": {
+      "file": "public/models/hero-core-lite.glb",
+      "bytes": 71684,
+      "kb": 70.0,
+      "triangles": 24704,
+      "nodes": [
+        "Core",
+        "Ribbon",
+        "Node_00",
+        "Node_01",
+        "Node_02",
+        "Path_00",
+        "Path_01",
+        "Path_02",
+        "Path_03",
+        "Trace_Inner",
+        "Ring_Inner",
+        "Node_03",
+        "Node_04",
+        "Node_05",
+        "Node_06",
+        "Trace_Mid",
+        "Ring_Mid",
+        "Node_07",
+        "Trace_Outer",
+        "Ring_Outer"
+      ],
+      "extensionsUsed": [
+        "KHR_draco_mesh_compression",
+        "KHR_materials_clearcoat",
+        "KHR_materials_emissive_strength"
+      ],
+      "extensionsRequired": [
+        "KHR_draco_mesh_compression"
+      ],
+      "omittedNodes": [
+        "Node_08",
+        "Node_09",
+        "Node_10",
+        "Node_11"
+      ]
+    },
+    "journeyRing": {
+      "file": "public/models/journey-ring.glb",
+      "bytes": 19180,
+      "kb": 18.7,
+      "triangles": 7488,
+      "nodes": [
+        "Journey_Ring"
+      ],
+      "extensionsUsed": [
+        "KHR_draco_mesh_compression",
+        "KHR_materials_clearcoat"
+      ],
+      "extensionsRequired": [
+        "KHR_draco_mesh_compression"
+      ]
+    }
+  },
+  "renders": {
+    "hero": [
+      "art/hero-core/previews/hero-core-front.png",
+      "art/hero-core/previews/hero-core-three-quarter.png",
+      "art/hero-core/previews/hero-core-side.png",
+      "public/images/hero-core-poster.webp"
+    ],
+    "journeyRing": [
+      "art/hero-core/previews/journey-ring-front.png",
+      "public/images/journey-ring-poster.webp"
+    ]
+  },
+  "params": {
+    "core_radius": 0.9,
+    "core_groove_half": 0.05,
+    "core_groove_depth": 0.07,
+    "core_boss_lat": 74.0,
+    "core_boss_height": 0.035,
+    "core_lat_steps": 36,
+    "core_segments": 128,
+    "rings": [
+      [
+        "Ring_Inner",
+        1.28,
+        0.07,
+        0.16,
+        [
+          35.0,
+          -60.0
+        ]
+      ],
+      [
+        "Ring_Mid",
+        1.58,
+        0.06,
+        0.13,
+        [
+          60.0,
+          58.0
+        ]
+      ],
+      [
+        "Ring_Outer",
+        1.88,
+        0.055,
+        0.11,
+        [
+          80.0,
+          15.0
+        ]
+      ]
+    ],
+    "ring_segments": 192,
+    "ring_corner_frac": 0.38,
+    "bevel_steps": 3,
+    "support_offset": 0.003,
+    "trace_width_frac": 0.16,
+    "trace_proud": 0.0025,
+    "trace_inset": 0.002,
+    "ribbon_radius": 2.22,
+    "ribbon_width": 0.24,
+    "ribbon_thickness": 0.022,
+    "ribbon_twist_amp": 0.35,
+    "ribbon_twist_k": 2,
+    "ribbon_stripe_period": 8,
+    "ribbon_stripe_on": 2,
+    "ribbon_segments": 240,
+    "ribbon_rest": [
+      -28.0,
+      -20.0
+    ],
+    "bead_radius": 0.04,
+    "bead_elongation": 1.5,
+    "bead_layout": [
+      [
+        0,
+        18.0
+      ],
+      [
+        0,
+        131.0
+      ],
+      [
+        0,
+        247.0
+      ],
+      [
+        1,
+        52.0
+      ],
+      [
+        1,
+        109.0
+      ],
+      [
+        1,
+        203.0
+      ],
+      [
+        1,
+        318.0
+      ],
+      [
+        2,
+        8.0
+      ],
+      [
+        2,
+        77.0
+      ],
+      [
+        2,
+        161.0
+      ],
+      [
+        2,
+        236.0
+      ],
+      [
+        2,
+        292.0
+      ]
+    ],
+    "bead_segments": 20,
+    "bead_rings": 10,
+    "strut_radius": 0.022,
+    "strut_foot_radius": 0.042,
+    "strut_angles": [
+      45.0,
+      135.0,
+      225.0,
+      315.0
+    ],
+    "strut_segments": 12,
+    "lite_factor": 0.5,
+    "lite_bead_count": 8,
+    "jr_radius": 1.0,
+    "jr_thickness": 0.09,
+    "jr_width": 0.26,
+    "jr_segments": 160,
+    "jr_stripe_period": 6,
+    "jr_stripe_on": 2,
+    "jr_rest": [
+      62.0,
+      -12.0
+    ],
+    "graphite_srgb": "#1a1f2e",
+    "graphite_metallic": 0.55,
+    "graphite_roughness": 0.3,
+    "graphite_coat": 1.0,
+    "graphite_coat_roughness": 0.06,
+    "enamel_srgb": "#eceff7",
+    "enamel_roughness": 0.38,
+    "matcha_srgb": "#4f7cff",
+    "bead_srgb": "#ff4a5e",
+    "bead_emission_strength": 1.6,
+    "matcha_emission_strength": 1.6,
+    "sharp_angle_deg": 40.0,
+    "draco_level": 7,
+    "draco_position_bits": 14,
+    "draco_normal_bits": 10,
+    "draco_texcoord_bits": 12,
+    "preview_px": 1024,
+    "review_px": 600,
+    "poster_px": 1600,
+    "jr_poster_px": 1200,
+    "samples": 48,
+    "lens_mm": 50.0,
+    "camera_distance": 8.2,
+    "jr_camera_distance": 4.0,
+    "world_rgb": [
+      0.003,
+      0.0038,
+      0.0085
+    ],
+    "key": {
+      "loc": [
+        -4.5,
+        -5.5,
+        5.0
+      ],
+      "size": 3.0,
+      "energy": 650.0,
+      "color": [
+        0.92,
+        0.95,
+        1.0
+      ]
+    },
+    "fill": {
+      "loc": [
+        5.5,
+        -4.0,
+        -1.5
+      ],
+      "size": 4.0,
+      "energy": 200.0,
+      "color": [
+        0.42,
+        0.58,
+        1.0
+      ]
+    },
+    "rim": {
+      "loc": [
+        2.5,
+        6.5,
+        3.5
+      ],
+      "size": 3.0,
+      "energy": 520.0,
+      "color": [
+        1.0,
+        0.26,
+        0.34
+      ]
+    }
+  }
+}

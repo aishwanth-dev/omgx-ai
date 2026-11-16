@@ -1,93 +1,111 @@
-# OMGX AI — standalone website
+# OMGX AI website
 
-New, independent website for **OMGX AI Private Limited** — *Think beyond. Engineer what's next.*
-Built from a clean project directory from the build pack in `../Prompts and Imgs/`. It does not reuse or connect to any other project or service.
+Website for **OMGX AI Private Limited** (*Think beyond. Engineer what's next.*): a scroll-driven homepage story with a 3D hero, capability pages, a work directory, an about page and an EmailJS contact form.
 
 ## Stack
 
-| Layer | Package (version installed) | Responsibility |
+| Layer | Packages | Responsibility |
 |---|---|---|
-| Framework | Next.js 16.4 App Router, React 19.3, TypeScript 5 | Routing, static prerendering, metadata/SEO |
-| 3D | three 0.187, @react-three/fiber 9.8, @react-three/drei 10.7 | WebGL scenes (procedural geometry + custom GLSL) |
-| Scroll choreography | gsap 3.15 + ScrollTrigger, @gsap/react | Pinned homepage story, scrubbed timelines, marquee, proof cards, process stack |
-| UI motion | motion 14 (`motion/react`, formerly Framer Motion) | Menus, mega menu, tab panels, filters, route fade, form states |
-| Styling | Plain CSS with design tokens (`src/app/globals.css`, `home.css`, `pages.css`) | No Tailwind |
+| Framework | Next.js 16.4 (App Router), React 19.3, TypeScript 5 | Routing, static prerendering, metadata and SEO |
+| 3D | three 0.187, @react-three/fiber 9.8, @react-three/drei 10.7 | WebGL scenes, GLB models (Draco compressed) |
+| Scroll | gsap 3.15 + ScrollTrigger, @gsap/react, lenis | Pinned homepage story, scrubbed timelines, smooth scrolling |
+| UI motion | motion 14 (`motion/react`) | Menus, tabs, filters, route fade, form states |
+| Contact | @emailjs/browser 5 | Enquiry delivery from the browser |
+| Tests | vitest 4, fast-check, Playwright (system Edge) | Unit and property tests, browser QA scripts |
 
-Animation ownership: R3F owns 3D objects/uniforms, GSAP owns scroll timelines and the shared story progress (`progress` ref, 0–1), Motion owns UI-level transitions, CSS owns small decorative loops. GSAP and Motion never animate the same element.
+Styling is plain CSS with design tokens (`src/app/globals.css` and the other `*.css` files in `src/app`). There is no Tailwind. GSAP owns scroll timelines, R3F owns 3D objects, Motion owns UI transitions.
 
-`cacheComponents` is disabled in `next.config.ts` on purpose: with it on, Next keeps visited routes mounted in a hidden `<Activity>`, which would keep WebGL contexts and ScrollTrigger pins alive. All routes are static anyway.
+`cacheComponents` is off in `next.config.ts` on purpose, so visited routes unmount and release their WebGL contexts and ScrollTrigger pins.
 
-## Run locally
+## Scripts
+
+| Command | What it does |
+|---|---|
+| `npm run dev` | Dev server on http://localhost:3000 (`predev` runs `scripts/copy-draco.mjs`) |
+| `npm run build` | Production build (`prebuild` runs `copy-draco.mjs`) |
+| `npm run start` | Serve the production build |
+| `npm run lint` | ESLint |
+| `npm test` | `vitest --run` |
+| `npx tsc --noEmit` | Type check |
+| `npm run art:build` | Rebuild the hero GLBs with Blender (see below) |
+| `npm run check:glb` | Validate `public/models/*.glb` (sizes, Draco, structure) |
+| `npm run build:land` | Regenerate the globe land-dot data |
+| `node scripts/check-encoding.mjs` | Check that source files are valid UTF-8 |
+
+Browser QA scripts live in `scripts/qa-*.mjs`. They drive the installed Microsoft Edge through Playwright against a running server and write screenshots to `qa-output/` (git-ignored). Examples:
 
 ```powershell
-npm install
-npm run dev          # http://localhost:3000
-npm run build        # production build (all pages prerendered)
-npm run start        # serve the production build
-npm run lint
-npx tsc --noEmit
+node scripts/qa-home.mjs http://localhost:3000 1440 900 desktop
+node scripts/qa-home.mjs http://localhost:3000 390 844 mobile
+node scripts/qa-routes.mjs http://localhost:3000
+node scripts/qa-navigation.mjs http://localhost:3000
+node scripts/qa-3d.mjs http://localhost:3000
 ```
 
-**Note for this machine:** drive `C:` was full when the project was set up, so npm's cache and temp files were redirected into a git-ignored folder inside the project:
+If drive `C:` is short on space, point npm and temp at the project:
 
 ```powershell
 $env:npm_config_cache = "$PWD\.cache\npm"; $env:TEMP = "$PWD\.cache\tmp"; $env:TMP = $env:TEMP
 ```
 
-Free space on `C:` (or keep these variables) before installing packages.
+## Fonts
 
-## Environment
+Fonts are self-hosted from `src/fonts` through `next/font/local` (`src/lib/fonts.ts`). No font request leaves the site's origin. Licence files sit next to the fonts.
 
-Copy `.env.example` to `.env.local`. Every value is an OMGX-specific placeholder and is empty by default:
+| Font | Use | Licence |
+|---|---|---|
+| Geist (static Regular, Medium, SemiBold, Bold, Black) | Body, UI and headings | SIL OFL 1.1 (`Geist-OFL.txt`) |
+| Lexend (variable) | Registered, not preloaded | SIL OFL 1.1 (`Lexend-OFL.txt`) |
+| Switzer (variable) | Registered, not preloaded | Indian Type Foundry FFL (`Switzer-ITF-FFL.txt`) |
 
-- `NEXT_PUBLIC_OMGX_SITE_URL`: canonical/base URL.
-- `NEXT_PUBLIC_OMGX_CONTACT_EMAIL`, `_PHONE`, `_ADDRESS`, `_LINKEDIN_URL`: shown only when set; otherwise "To be confirmed".
-- `OMGX_CONTACT_WEBHOOK_URL` (+ optional `OMGX_CONTACT_WEBHOOK_TOKEN`): HTTPS endpoint of the OMGX-approved enquiry delivery service. `/api/contact` validates and forwards enquiries there. **When unset, the form tells the user plainly that the message was not sent** (HTTP 503). It never fakes success.
+## 3D models and the Blender pipeline
+
+`public/models` holds `hero-core.glb`, `hero-core-lite.glb` and `journey-ring.glb`, with poster images in `public/images`. The Draco decoder is copied from `node_modules/three` into `public/draco/gltf` by `scripts/copy-draco.mjs` on every `dev` and `build`; the copy is also committed.
+
+The hero models are built headlessly in Blender from `art/hero-core/build_hero_core.py`:
+
+```powershell
+npm run art:build
+# same as: powershell -NoProfile -File scripts/blender/run-blender.ps1
+```
+
+`scripts/blender/run-blender.ps1` expects Blender in `A:\OMGX-AI\tools\blender-5.2.4-windows-x64` and keeps its temp files on drive A:. The build report is written to `art/hero-core/build-report.json`. Run `npm run check:glb` afterwards.
+
+## Contact form (EmailJS)
+
+The form sends from the browser with the EmailJS SDK (`src/lib/emailjs.ts`). It sends one notification to the OMGX AI inbox and one auto-reply to the visitor. There is no server route and no webhook. All values are public client-side IDs and have defaults in code, so nothing needs to be configured. To override them, copy `.env.example` to `.env.local`:
+
+- `NEXT_PUBLIC_EMAILJS_SERVICE_ID`
+- `NEXT_PUBLIC_EMAILJS_PUBLIC_KEY`
+- `NEXT_PUBLIC_EMAILJS_TEMPLATE_NOTIFY`
+- `NEXT_PUBLIC_EMAILJS_TEMPLATE_REPLY`
+- `NEXT_PUBLIC_OMGX_SITE_URL` (canonical URL, sitemap, Open Graph)
+
+The EmailJS private key is not used by the site and must never be added to the repository. `.env*` files are git-ignored except `.env.example`.
+
+## Dev origins
+
+`allowedDevOrigins` in `next.config.ts` lets the dev server be opened as `127.0.0.1` or from a LAN address (`192.168.*.*`, `10.*.*.*`) without HMR WebSocket errors. It affects `next dev` only.
+
+## Deployment (Vercel)
+
+- Framework preset: Next.js
+- Root directory: the repository root
+- Build command: `npm run build`
+- Install command: `npm install` (default)
+- Environment variables: none required, the defaults are in code
 
 ## Structure
 
 ```text
-src/
-├── app/                      routes, layout, CSS, sitemap/robots, /api/contact
-├── content/                  single source of truth transcribed from ABOUT_OMGX_AI.md
-│   ├── capabilities.ts       four verticals in the required order + Custom R&D
-│   ├── projects.ts           26 canonical project records + work filters
-│   ├── initiatives.ts        products / concepts / research (OMG Collections hidden; OMG Glitz excluded)
-│   ├── company.ts            story, founder, journey stages, geography, process
-│   └── site.ts               brand + env-driven contact config
-├── components/
-│   ├── layout/               SiteHeader (mega menu, mobile overlay), SiteFooter, Logo
-│   ├── loader/               OmgxPreloader (real readiness: page, fonts, first WebGL frame)
-│   ├── three/                NeuralCore, StoryScene, MachineAssembly, TunnelFrames, FlowingSplines,
-│   │                         CapabilityBand, GlobeScene, CapabilityHeroScene, CoreMini, shaders
-│   ├── sections/             homepage sections (HomeStory owns the pinned GSAP timeline)
-│   ├── motion/               KineticMarquee
-│   └── ui/                   ProjectVisual (labelled conceptual SVG), WorkDirectory, ContactForm, …
-└── lib/                      gsap registration, device/WebGL/reduced-motion hooks, readiness store, math
-scripts/                      Playwright QA scripts (use the installed Microsoft Edge)
+src/app/          routes, layout, CSS, sitemap, robots, social images
+src/content/      capabilities, projects, initiatives, company, site config
+src/components/   layout, loader, three, sections, motion, globe, ui
+src/lib/          gsap and lenis setup, device hooks, readiness store, emailjs, fonts
+src/fonts/        self-hosted fonts and licences
+art/hero-core/    Blender source for the hero models
+scripts/          copy-draco, check-glb, check-encoding, Blender runner, qa-*.mjs
+public/           models, draco, brand, images
 ```
 
-## Routes
-
-`/`, `/capabilities`, `/capabilities/{artificial-intelligence | industrial-automation | immersive-technologies | hardware-engineering}`, `/work`, `/work/{26 project slugs}`, `/products-research`, `/about`, `/contact`, plus `sitemap.xml`, `robots.txt` and a custom 404.
-
-## Browser QA
-
-The scripts drive the system's Microsoft Edge through Playwright (no browser download needed):
-
-```powershell
-node scripts/qa-home.mjs http://localhost:3000 1440 900 desktop     # loader, story checkpoints, sections
-node scripts/qa-home.mjs http://localhost:3000 390 844 mobile
-$env:QA_REDUCED="1"; node scripts/qa-home.mjs http://localhost:3000 1440 900 reduced
-$env:QA_NOWEBGL="1"; node scripts/qa-home.mjs http://localhost:3000 1440 900 nowebgl
-node scripts/qa-routes.mjs http://localhost:3000        # every route, filters, mega menu, form, mobile menu
-node scripts/qa-interactions.mjs http://localhost:3000  # capability tabs (mouse + keyboard), globe
-node scripts/qa-navigation.mjs http://localhost:3000    # client navigation, back/forward, teardown
-node scripts/check-encoding.mjs                         # source files are valid UTF-8
-```
-
-Screenshots are written to `qa-output/` (git-ignored).
-
-## Not done / needs approval
-
-See [`docs/MISSING_ASSETS.md`](docs/MISSING_ASSETS.md). Nothing has been pushed, deployed or connected to any external service.
+Open items and decisions for the owner are in [`docs/MISSING_ASSETS.md`](docs/MISSING_ASSETS.md).

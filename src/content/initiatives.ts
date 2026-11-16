@@ -1,8 +1,5 @@
 /**
- * Products, concepts and research initiatives — content/ABOUT_OMGX_AI.md section 11.
- * The profile does not confirm a public launch status for any of these, so
- * every item carries "Status to be confirmed". Never relabel as Live/Launched
- * without written confirmation from OMGX AI.
+ * Products, concepts and research initiatives (ABOUT_OMGX_AI.md section 11).
  * OMG Glitz is deliberately excluded.
  */
 import type { FilterKey } from "./projects";
@@ -15,7 +12,6 @@ export type Initiative = {
   name: string;
   type: InitiativeType;
   description: string;
-  status: "Status to be confirmed";
   tags: FilterKey[];
 };
 
@@ -48,7 +44,6 @@ export const initiatives: Initiative[] = [
     name: "BONA AI",
     type: "product",
     description: "AI-powered business communication, lead generation and automation for SMEs and service businesses.",
-    status: "Status to be confirmed",
     tags: ["ai-software"],
   },
   {
@@ -56,7 +51,6 @@ export const initiatives: Initiative[] = [
     name: "BiziGPT",
     type: "product",
     description: "WhatsApp-based AI business assistant for retailers and local businesses.",
-    status: "Status to be confirmed",
     tags: ["ai-software"],
   },
   {
@@ -64,7 +58,6 @@ export const initiatives: Initiative[] = [
     name: "JEV Vision Integration",
     type: "product",
     description: "AI vision-based industrial inspection focused on sealant detection and operator compliance.",
-    status: "Status to be confirmed",
     tags: ["ai-software", "industrial"],
   },
   {
@@ -72,7 +65,6 @@ export const initiatives: Initiative[] = [
     name: "BinWin AI Applications",
     type: "product",
     description: "AI-enabled web application, admin dashboard, partner application and AI vision scanner.",
-    status: "Status to be confirmed",
     tags: ["ai-software"],
   },
   {
@@ -80,7 +72,6 @@ export const initiatives: Initiative[] = [
     name: "Pitwall",
     type: "product",
     description: "Open-source AI developer command-centre plugin for Omarchy Linux.",
-    status: "Status to be confirmed",
     tags: ["ai-software"],
   },
   {
@@ -88,7 +79,6 @@ export const initiatives: Initiative[] = [
     name: "OMGX-OS",
     type: "concept",
     description: "Multi-tenant AI agent orchestration platform concept.",
-    status: "Status to be confirmed",
     tags: ["ai-software"],
   },
   {
@@ -96,7 +86,6 @@ export const initiatives: Initiative[] = [
     name: "OMGX-app",
     type: "concept",
     description: "Voice-first agentic AI communication application concept.",
-    status: "Status to be confirmed",
     tags: ["ai-software"],
   },
   {
@@ -104,7 +93,6 @@ export const initiatives: Initiative[] = [
     name: "Mallika AI Receptionist",
     type: "concept",
     description: "AI-powered receptionist concept for salon customer support and appointment booking.",
-    status: "Status to be confirmed",
     tags: ["ai-software"],
   },
   {
@@ -112,7 +100,6 @@ export const initiatives: Initiative[] = [
     name: "OMG Now",
     type: "concept",
     description: "Hyperlocal services and apartment-community gateway super-app concept.",
-    status: "Status to be confirmed",
     tags: ["ai-software"],
   },
   {
@@ -120,7 +107,6 @@ export const initiatives: Initiative[] = [
     name: "Pattern Internet",
     type: "research",
     description: "Research into distributed pattern intelligence and decentralised agent architecture.",
-    status: "Status to be confirmed",
     tags: ["research", "ai-software"],
   },
   {
@@ -128,7 +114,6 @@ export const initiatives: Initiative[] = [
     name: "Fruit Brain",
     type: "research",
     description: "Experimental research into dynamical intelligence and biologically inspired computing.",
-    status: "Status to be confirmed",
     tags: ["research", "ai-software"],
   },
   {
@@ -136,7 +121,6 @@ export const initiatives: Initiative[] = [
     name: "OMG Collections",
     type: "other",
     description: "Ladies' fashion retail business initiative. Not part of the four core technology verticals.",
-    status: "Status to be confirmed",
     tags: ["research"],
   },
 ];

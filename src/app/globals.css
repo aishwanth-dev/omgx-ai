@@ -1,33 +1,56 @@
 /* ==========================================================================
    OMGX AI — design system
    Tokens follow the owner-supplied palette and typography specification.
-   Switzer and Our Lexend are not supplied yet: the stacks below try the real
-   family first, then fall back to licensed open fonts loaded by next/font
-   (Inter Tight for Switzer, Lexend for Our Lexend). See docs/MISSING_ASSETS.md.
+   Fonts are self-hosted from src/fonts (licences alongside): Geist for the
+   whole site. Switzer and Lexend files stay with their licences, unused.
    ========================================================================== */
 
 :root {
-  --omgx-ink: #080b0d;
-  --omgx-ink-soft: #111719;
-  --omgx-ink-2: #0d1214;
-  --omgx-paper: #edf0ee;
-  --omgx-paper-2: #f6f7f5;
-  --omgx-matcha: #00e89a;
-  --omgx-mint: #a5f3d2;
-  --omgx-green-deep: #063c2c;
-  --omgx-green-mid: #0b7a52;
-  --omgx-blue-utility: #0000ee;
+  /* Palette: deep navy-black, blue, red and white. The old --omgx-matcha / mint / green-*
+     names stay as aliases so every existing rule resolves to the new colours. */
+  --omgx-ink: #05070f;
+  --omgx-ink-soft: #0b1020;
+  --omgx-ink-2: #080c18;
+  --omgx-paper: #f3f5fa;
+  --omgx-paper-2: #f8f9fc;
+  --omgx-blue: #1f4fd8;
+  --omgx-blue-light: #4f7cff;
+  --omgx-blue-deep: #0b1a4a;
+  --omgx-blue-soft: #9db6ff;
+  --omgx-red: #d4213d;
+  --omgx-red-light: #ff4a5e;
+  --omgx-red-deep: #4a0a14;
+  --omgx-violet: #5b2a8c;
+  --omgx-matcha: var(--omgx-blue-light);
+  --omgx-mint: #a9bfff;
+  --omgx-green-deep: #1739b0;
+  --omgx-green-mid: var(--omgx-blue);
+  --omgx-blue-utility: #1f3fcf;
   --omgx-white: #ffffff;
-  --omgx-muted-dark: #89938f;
-  --omgx-muted-light: #5a645f;
+  --omgx-muted-dark: #98a1bb;
+  --omgx-muted-light: #535c78;
   --omgx-line-dark: rgba(255, 255, 255, 0.16);
   --omgx-line-dark-strong: rgba(255, 255, 255, 0.32);
-  --omgx-line-light: rgba(8, 11, 13, 0.14);
-  --omgx-line-light-strong: rgba(8, 11, 13, 0.32);
+  --omgx-line-light: rgba(5, 7, 15, 0.14);
+  --omgx-line-light-strong: rgba(5, 7, 15, 0.32);
 
-  --font-switzer: "Switzer", "Switzer Placeholder", var(--font-switzer-fallback), "Helvetica Neue", Arial, sans-serif;
-  --font-helvetica: "Helvetica Neue", "Helvetica", Arial, sans-serif;
-  --font-our-lexend: "Our Lexend", var(--font-lexend-fallback), "Lexend", sans-serif;
+  /* Gradient tokens (blue -> faint violet -> red through deep navy, soft falloff). */
+  --grad-accent: linear-gradient(100deg, #1f4fd8 0%, #4b3cc4 48%, #d4213d 100%);
+  --grad-accent-hover: linear-gradient(100deg, #3a68f0 0%, #6a45d6 48%, #ff4a5e 100%);
+  --grad-glow-blue: radial-gradient(closest-side, rgba(31, 79, 216, 0.5), rgba(11, 26, 74, 0.22) 55%, transparent);
+  --grad-glow-red: radial-gradient(closest-side, rgba(212, 33, 61, 0.46), rgba(74, 10, 20, 0.2) 55%, transparent);
+  --grad-field: linear-gradient(180deg, #05070f 0%, #0b1a4a 34%, #1f4fd8 58%, #7a2a7a 78%, #d4213d 100%);
+  --glow-blue-rgb: 79, 124, 255;
+  --glow-red-rgb: 255, 74, 94;
+
+  /* One family for the whole site: the owner's Geist static cuts (src/fonts, loaded in
+     lib/fonts.ts), body and UI at 400, headings at their own true weights.
+     The older token names stay as aliases so existing rules resolve to Geist. */
+  --font-geist: var(--font-geist-local), "Geist", ui-sans-serif, system-ui, "Segoe UI", Arial, sans-serif;
+  --font-switzer: var(--font-geist);
+  --font-helvetica: var(--font-geist);
+  --font-our-lexend: var(--font-geist);
+  --font-heading: var(--font-geist);
 
   --gutter: clamp(20px, 4.2vw, 72px);
   --max: 1680px;
@@ -50,6 +73,7 @@ html {
   background: var(--omgx-ink);
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
+  font-synthesis: none;
 }
 
 html,
@@ -187,17 +211,22 @@ ol {
   background-color: var(--surface);
 }
 
-[data-theme="matcha"] {
-  --fg: var(--omgx-ink);
-  --fg-muted: #1d3a2f;
-  --line: rgba(8, 11, 13, 0.2);
-  --line-strong: rgba(8, 11, 13, 0.4);
-  --surface: var(--omgx-matcha);
-  --accent-text: var(--omgx-ink);
-  --utility: var(--omgx-ink);
-  --focus-ring: var(--omgx-ink);
+/* The blue "matcha" surface carries the dark header tone: white text on a deep blue band. */
+[data-theme="matcha"],
+[data-surface="matcha"] {
+  --fg: var(--omgx-white);
+  --fg-muted: #c4cff2;
+  --line: rgba(255, 255, 255, 0.2);
+  --line-strong: rgba(255, 255, 255, 0.4);
+  --surface: #17389f;
+  --accent-text: var(--omgx-white);
+  --utility: #c9d6ff;
+  --focus-ring: var(--omgx-white);
   color: var(--fg);
   background-color: var(--surface);
+  background-image:
+    radial-gradient(60% 55% at 90% 55%, rgba(212, 33, 61, 0.42), transparent 70%),
+    radial-gradient(50% 55% at 6% 40%, rgba(79, 124, 255, 0.3), transparent 70%);
 }
 
 /* ---------- layout ---------- */
@@ -233,41 +262,48 @@ ol {
 
 /* ---------- typography ---------- */
 
+/* Headings: Geist Bold (owner request), tuned tight for display sizes. */
 .type-switzer-display,
 .t-display {
-  font-family: var(--font-switzer);
-  font-weight: 500;
-  font-size: clamp(40px, 5vw, 72px);
-  line-height: 0.945;
-  letter-spacing: -0.03em;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: clamp(38px, 4.7vw, 70px);
+  line-height: 0.98;
+  letter-spacing: -0.045em;
   text-wrap: balance;
 }
 
 .t-display-xl {
-  font-family: var(--font-switzer);
-  font-weight: 500;
-  font-size: clamp(46px, 7.4vw, 128px);
-  line-height: 0.92;
-  letter-spacing: -0.035em;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: clamp(44px, 6.8vw, 120px);
+  line-height: 0.94;
+  letter-spacing: -0.05em;
 }
 
 .t-display-l {
-  font-family: var(--font-switzer);
-  font-weight: 500;
-  font-size: clamp(42px, 6vw, 104px);
-  line-height: 0.93;
-  letter-spacing: -0.034em;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: clamp(40px, 5.6vw, 98px);
+  line-height: 0.95;
+  letter-spacing: -0.048em;
   text-wrap: balance;
 }
 
 .type-lexend-statement,
 .t-statement {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: clamp(30px, 4.3vw, 62px);
+  line-height: 1.04;
+  letter-spacing: -0.04em;
+  text-wrap: balance;
+}
+
+.t-lexend {
   font-family: var(--font-our-lexend);
   font-weight: 600;
-  font-size: clamp(30px, 4.45vw, 64px);
-  line-height: 1.125;
   letter-spacing: -0.01em;
-  text-wrap: balance;
 }
 
 .type-utility,
@@ -291,16 +327,16 @@ ol {
 }
 
 .t-h3 {
-  font-family: var(--font-switzer);
-  font-weight: 500;
-  font-size: clamp(24px, 2.4vw, 36px);
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: clamp(23px, 2.3vw, 34px);
   line-height: 1.08;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.035em;
 }
 
 .t-h4 {
-  font-family: var(--font-switzer);
-  font-weight: 500;
+  font-family: var(--font-heading);
+  font-weight: 650;
   font-size: clamp(19px, 1.5vw, 23px);
   line-height: 1.2;
   letter-spacing: -0.01em;
@@ -360,43 +396,79 @@ ol {
     background-color 0.35s var(--ease-out);
 }
 
-.btn::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background: var(--btn-hover, var(--omgx-matcha));
-  transform: translateY(101%);
-  transition: transform 0.45s var(--ease-out);
+/* Long labels wrap on narrow screens instead of being clipped by the pill. */
+@media (max-width: 520px) {
+  .btn {
+    max-width: 100%;
+    padding-block: 12px;
+    white-space: normal;
+    line-height: 1.3;
+  }
 }
 
-.btn:hover::before,
-.btn:focus-visible::before {
-  transform: translateY(0);
+/* Buttons are flat: solid near-black on light surfaces, solid white on dark ones.
+   --btn-solid / --btn-on come from the nearest data-theme (set below), so a button
+   always contrasts with the surface it sits on. No gradients, glow or coloured shadow. */
+[data-theme="dark"],
+[data-theme="matcha"] {
+  --btn-solid: #ffffff;
+  --btn-on: #05070f;
+}
+
+[data-theme="light"],
+.site-header[data-header-theme="light"]:not(.is-open) {
+  --btn-solid: #05070f;
+  --btn-on: #ffffff;
+}
+
+.btn {
+  --btn-bg: transparent;
+  --btn-fg: var(--btn-solid, currentColor);
+  --btn-border: var(--btn-solid, currentColor);
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    transform 0.2s var(--ease-out);
 }
 
 .btn:hover,
 .btn:focus-visible {
-  color: var(--btn-hover-fg, var(--omgx-ink));
-  border-color: var(--btn-hover, var(--omgx-matcha));
+  --btn-bg: var(--btn-solid, currentColor);
+  --btn-fg: var(--btn-on, var(--surface));
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--btn-solid, currentColor);
+  outline-offset: 3px;
 }
 
 .btn--primary {
-  --btn-bg: var(--omgx-matcha);
-  --btn-fg: var(--omgx-ink);
-  --btn-border: var(--omgx-matcha);
-  --btn-hover: var(--omgx-white);
+  --btn-bg: var(--btn-solid);
+  --btn-fg: var(--btn-on);
+  --btn-border: var(--btn-solid);
+  box-shadow: none;
 }
 
-[data-theme="light"] .btn--primary,
-[data-theme="matcha"] .btn--primary {
-  --btn-bg: var(--omgx-ink);
-  --btn-fg: var(--omgx-white);
-  --btn-border: var(--omgx-ink);
-  --btn-hover: var(--omgx-green-deep);
-  --btn-hover-fg: var(--omgx-white);
+.btn--primary:hover,
+.btn--primary:focus-visible {
+  --btn-bg: color-mix(in srgb, var(--btn-solid) 84%, var(--btn-on));
+  --btn-fg: var(--btn-on);
 }
 
+.btn[disabled] {
+  opacity: 0.6;
+}
 .btn__arrow {
   display: inline-block;
   transition: transform 0.35s var(--ease-out);
@@ -443,11 +515,6 @@ ol {
 .chip--accent {
   border-color: var(--omgx-matcha);
   color: var(--accent-text);
-}
-
-.chip--pending {
-  border-style: dashed;
-  color: var(--fg-muted);
 }
 
 .chip__dot {
@@ -506,12 +573,12 @@ ol {
   opacity: 0;
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
-  background: rgba(8, 11, 13, 0.55);
+  background: rgba(5, 7, 15, 0.55);
   transition: opacity 0.35s var(--ease-out);
 }
 
 .site-header[data-header-theme="light"]::before {
-  background: rgba(237, 240, 238, 0.72);
+  background: rgba(243, 245, 250, 0.72);
 }
 
 .site-header.is-scrolled::before {
@@ -601,13 +668,7 @@ ol {
   padding: 0 18px;
 }
 
-.site-header[data-header-theme="light"]:not(.is-open) .site-header__cta {
-  --btn-bg: var(--omgx-ink);
-  --btn-fg: var(--omgx-white);
-  --btn-border: var(--omgx-ink);
-  --btn-hover: var(--omgx-green-deep);
-  --btn-hover-fg: var(--omgx-white);
-}
+/* header CTA: same flat button; the light-header tone comes from the --btn-solid tokens above */
 
 .menu-toggle {
   display: none;
@@ -712,12 +773,6 @@ ol {
   background: var(--omgx-ink-soft);
 }
 
-.mega__item-index {
-  font: 500 12px/1 var(--font-helvetica);
-  color: var(--omgx-matcha);
-  letter-spacing: 0.08em;
-}
-
 .mega__item-title {
   font-size: 20px;
   font-weight: 500;
@@ -735,7 +790,7 @@ ol {
 .mobile-menu {
   position: fixed;
   inset: 0;
-  z-index: 98;
+  z-index: 1; /* below .site-header__inner (z 2) so the logo and Close stay visible */
   display: flex;
   flex-direction: column;
   padding: calc(var(--header-h) + 24px) var(--gutter) 32px;
@@ -766,12 +821,6 @@ ol {
   letter-spacing: -0.03em;
 }
 
-.mobile-menu__link span:last-child {
-  font: 500 12px/1 var(--font-helvetica);
-  letter-spacing: 0.08em;
-  color: var(--fg-muted);
-}
-
 .mobile-menu__link[aria-current="page"] {
   color: var(--omgx-matcha);
 }
@@ -795,103 +844,342 @@ ol {
   }
 }
 
-/* ---------- footer ---------- */
+/* ---------- halftone footer ---------- */
 
-.site-footer {
+.hwf-root {
   position: relative;
+  width: 100%;
+  height: clamp(500px, 54vw, 740px);
   overflow: hidden;
-  padding-top: clamp(72px, 9vw, 140px);
-  border-top: 1px solid var(--line);
+  isolation: isolate;
+  color: #e2e7f7;
+  -webkit-font-smoothing: antialiased;
+  --blend-h: clamp(120px, 13vw, 190px);
 }
 
-.site-footer__top {
-  display: grid;
-  grid-template-columns: 5fr 7fr;
-  gap: clamp(40px, 6vw, 96px);
+/* The blend from the last section paints above the halftone canvas. */
+.hwf-root[data-surface]::before {
+  z-index: 1;
+  /* Eased ramp from the section above into the footer colour: no step, no visible edge. */
+  background: linear-gradient(
+    to bottom,
+    var(--blend-from) 0%,
+    color-mix(in srgb, var(--blend-from) 80%, var(--blend-to)) 10%,
+    color-mix(in srgb, var(--blend-from) 55%, var(--blend-to)) 25%,
+    color-mix(in srgb, var(--blend-from) 32%, var(--blend-to)) 40%,
+    color-mix(in srgb, var(--blend-from) 15%, var(--blend-to)) 60%,
+    color-mix(in srgb, var(--blend-from) 5%, var(--blend-to)) 80%,
+    var(--blend-to) 100%
+  );
 }
 
-.site-footer__cols {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 32px;
+.hwf-root canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  max-width: none;
 }
 
-.site-footer__col h2 {
-  margin-bottom: 18px;
-}
-
-.site-footer__col li + li {
-  margin-top: 10px;
-}
-
-.site-footer__col a {
-  color: var(--fg-muted);
-  transition: color 0.25s;
-}
-
-.site-footer__col a:hover,
-.site-footer__col a:focus-visible {
-  color: var(--fg);
-}
-
-.site-footer__wordmark {
-  margin-top: clamp(56px, 8vw, 120px);
-  font-family: var(--font-switzer);
-  font-weight: 500;
-  font-size: clamp(80px, 21vw, 380px);
-  line-height: 0.78;
-  letter-spacing: -0.06em;
-  white-space: nowrap;
-  color: transparent;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.02));
-  -webkit-background-clip: text;
-  background-clip: text;
-  user-select: none;
-  transform: translateY(6%);
-}
-
-.site-footer__bottom {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 16px;
-  padding-block: 22px;
-  border-top: 1px solid var(--line);
+.hwf-top {
   position: relative;
   z-index: 1;
-  background: var(--omgx-ink);
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) repeat(3, minmax(0, 1fr));
+  gap: 24px;
+  padding: max(clamp(64px, 8vw, 120px), calc(var(--blend-h) * 0.72)) var(--gutter) 0;
+  font-family: var(--font-helvetica);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  line-height: 1.85;
 }
 
-@media (max-width: 860px) {
-  .site-footer__top {
-    grid-template-columns: 1fr;
+/* The logo sits flush left at full white, on one line, 14px above the legal name.
+   Brand text rules target direct children only so they never dim the logo's own spans. */
+.hwf-logo {
+  display: inline-flex;
+  align-items: center;
+  margin-bottom: 14px;
+  opacity: 1;
+  filter: none;
+  mix-blend-mode: normal;
+  letter-spacing: normal;
+  text-transform: none;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.hwf-logo .logo {
+  gap: 12px;
+}
+
+.hwf-logo .logo__img {
+  height: 44px;
+  width: 44px;
+  opacity: 1;
+  filter: none;
+}
+
+.hwf-logo .logo__word {
+  font-size: 22px;
+  color: #fff;
+  opacity: 1;
+  white-space: nowrap;
+}
+
+.hwf-logo .logo__ai {
+  opacity: 0.82;
+}
+
+.hwf-brand > strong {
+  display: block;
+  font-weight: 500;
+  color: #fff;
+}
+
+.hwf-brand > span {
+  display: block;
+  color: rgba(226, 231, 247, 0.74);
+}
+
+.hwf-brand > .hwf-tag {
+  margin-top: 14px;
+  color: var(--omgx-red-light);
+}
+
+.hwf-col h2 {
+  margin: 0 0 4px;
+  font-size: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+  color: var(--omgx-blue-soft, #9db6ff);
+}
+
+.hwf-col ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.hwf-col a,
+.hwf-up {
+  color: inherit;
+  text-decoration: none;
+  opacity: 0.82;
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  cursor: pointer;
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 0% 1px;
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  transition:
+    opacity 0.25s ease,
+    color 0.25s ease,
+    background-size 0.35s cubic-bezier(0.2, 0.7, 0.1, 1);
+}
+
+.hwf-col a:hover,
+.hwf-up:hover,
+.hwf-col a:focus-visible,
+.hwf-up:focus-visible {
+  opacity: 1;
+  color: var(--omgx-red-light);
+  background-size: 100% 1px;
+}
+
+.hwf-rule {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin: clamp(18px, 2.6vw, 32px) var(--gutter) 0;
+  padding-top: 12px;
+  border-top: 0.5px solid rgba(201, 208, 230, 0.16);
+  font-family: var(--font-helvetica);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.hwf-addr {
+  color: rgba(226, 231, 247, 0.82);
+}
+
+.hwf-up {
+  margin-left: auto;
+}
+
+@media (max-width: 720px) {
+  .hwf-top {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    row-gap: 18px;
   }
 
-  .site-footer__cols {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .hwf-brand {
+    grid-column: 1 / -1;
+  }
+
+  /* Content sets the height; the bottom padding keeps links clear of the cropped wordmark. */
+  .hwf-root {
+    height: auto;
+    min-height: 680px;
+    padding-bottom: calc(22vw + env(safe-area-inset-bottom, 0px));
+  }
+
+  .hwf-up {
+    white-space: nowrap;
+    min-height: 44px;
+    padding-inline: 4px;
+  }
+
+  .hwf-rule {
+    flex-wrap: wrap;
+    row-gap: 4px;
+  }
+
+  .hwf-col a {
+    display: inline-block;
+    padding-block: 3px;
   }
 }
+
+/* ---------- route curtain ---------- */
+
+.curtain {
+  position: fixed;
+  inset: 0;
+  z-index: 400;
+  display: grid;
+  place-items: center;
+  visibility: hidden;
+  clip-path: inset(100% 0% 0% 0%);
+  background:
+    radial-gradient(80% 60% at 18% 118%, rgba(var(--glow-blue-rgb), 0.3), transparent 70%),
+    radial-gradient(70% 55% at 92% 125%, rgba(var(--glow-red-rgb), 0.26), transparent 72%),
+    var(--omgx-ink);
+  pointer-events: none;
+}
+
+.curtain__edge {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--omgx-matcha), transparent);
+}
+
+.curtain__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  width: min(90vw, 760px);
+  padding-inline: 12px;
+  color: var(--omgx-white);
+}
+
+.curtain__label {
+  display: block;
+  max-width: 100%;
+  padding-block: 0.15em;
+  color: var(--omgx-mint);
+  line-height: 1.5;
+  text-align: center;
+  white-space: normal;
+  overflow-wrap: break-word;
+  text-wrap: balance;
+}
+
+/* ---------- film grain + section blending ---------- */
+
+.grain {
+  position: fixed;
+  inset: -50%;
+  z-index: 350;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  animation: grain-shift 1.2s steps(6) infinite;
+}
+
+@keyframes grain-shift {
+  0% { transform: translate(0, 0); }
+  20% { transform: translate(-3%, 2%); }
+  40% { transform: translate(2%, -4%); }
+  60% { transform: translate(-4%, -1%); }
+  80% { transform: translate(3%, 3%); }
+  100% { transform: translate(0, 0); }
+}
+
+/* ---------- section surfaces and blends ----------
+   Values match src/lib/surfaces.ts (checked by surfaces.test.ts). Each top-level
+   section carries data-surface (its background) and data-edge (the colour its
+   bottom ends on). The next section paints a gradient from the previous edge
+   colour to its own surface inside its top padding. CSS only, server-rendered. */
+
+:root {
+  --s-ink: #05070f;
+  --s-mist: #f3f5fa;
+  --s-matcha: #17389f;
+  --s-showcase: #0b1020;
+  --s-footer: #05070f;
+}
+
+[data-surface="ink"] { --surface-hex: var(--s-ink); }
+[data-surface="mist"] { --surface-hex: var(--s-mist); }
+[data-surface="matcha"] { --surface-hex: var(--s-matcha); }
+[data-surface="showcase"] { --surface-hex: var(--s-showcase); }
+[data-surface="footer"] { --surface-hex: var(--s-footer); }
+
+[data-surface] {
+  --blend-from: transparent;
+  --blend-to: transparent;
+  position: relative;
+  background-color: var(--surface-hex);
+}
+
+/* No blend where the colours already match (ink and footer share a value). */
+[data-edge="ink"] + [data-surface]:not([data-surface="ink"], [data-surface="footer"]) { --blend-from: var(--s-ink); --blend-to: var(--surface-hex); }
+[data-edge="mist"] + [data-surface]:not([data-surface="mist"]) { --blend-from: var(--s-mist); --blend-to: var(--surface-hex); }
+[data-edge="matcha"] + [data-surface]:not([data-surface="matcha"]) { --blend-from: var(--s-matcha); --blend-to: var(--surface-hex); }
+[data-edge="showcase"] + [data-surface]:not([data-surface="showcase"]) { --blend-from: var(--s-showcase); --blend-to: var(--surface-hex); }
+[data-edge="footer"] + [data-surface]:not([data-surface="ink"], [data-surface="footer"]) { --blend-from: var(--s-footer); --blend-to: var(--surface-hex); }
+
+/* Last section into the footer, for pages whose sections sit directly in <main> or in one <article>.
+   One rule per edge colour that differs from the footer. */
+main:has(> [data-edge="mist"]:last-child, > article:last-child > [data-edge="mist"]:last-child) + .hwf-root { --blend-from: var(--s-mist); --blend-to: var(--surface-hex); }
+main:has(> [data-edge="matcha"]:last-child, > article:last-child > [data-edge="matcha"]:last-child) + .hwf-root { --blend-from: var(--s-matcha); --blend-to: var(--surface-hex); }
+main:has(> [data-edge="showcase"]:last-child, > article:last-child > [data-edge="showcase"]:last-child) + .hwf-root { --blend-from: var(--s-showcase); --blend-to: var(--surface-hex); }
+
+/* The blend layer: transparent unless a different edge colour precedes it. */
+[data-surface]::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: var(--blend-h, 0px);
+  pointer-events: none;
+  z-index: 0;
+  background: linear-gradient(to bottom, var(--blend-from), var(--blend-to));
+}
+
+/* Blend height equals the section's top padding, so no text sits on the blend. */
+.section { --blend-h: clamp(88px, 12vw, 184px); }
+.section--tight { --blend-h: clamp(64px, 8vw, 120px); }
 
 /* ---------- page shell ---------- */
 
 main {
   display: block;
-}
-
-.page-transition {
-  min-height: 100vh;
-}
-
-.pending-note {
-  display: inline-flex;
-  align-items: flex-start;
-  gap: 10px;
-  padding: 12px 14px;
-  border: 1px dashed var(--line-strong);
-  border-radius: var(--radius-s);
-  font-size: 13.5px;
-  line-height: 1.45;
-  color: var(--fg-muted);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -925,4 +1213,164 @@ main {
   margin-left: 4px;
   font-weight: 500;
   opacity: 0.62;
+}
+
+/* ---------- heading reveal (RevealHeading + RevealObserver) ----------
+   TextReveal adaptation: each word rises 10px, fades up and resolves from an
+   8px blur. Start states exist only under html.motion, so headings are fully
+   visible without JS and with reduced motion. */
+
+.rw,
+.rw__in {
+  display: inline-block;
+}
+
+.rw-line {
+  display: block;
+}
+
+html.motion [data-reveal] .rw__in {
+  opacity: 0;
+  transform: translateY(10px);
+  filter: blur(8px);
+  transition: opacity 0.6s, transform 0.6s, filter 0.6s;
+  transition-timing-function: cubic-bezier(0.23, 1, 0.32, 1);
+  transition-delay: calc(var(--i, 0) * var(--rt-step, 0s));
+}
+
+html.motion [data-reveal].is-in .rw__in {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+
+/* Homepage H1: BlurText recipe, started by the intro (adds .is-intro). */
+html.motion [data-reveal="intro"].is-intro .rw__in {
+  animation: blur-in 0.7s linear both;
+  animation-delay: calc(var(--i, 0) * 0.12s);
+}
+
+@keyframes blur-in {
+  0% { opacity: 0; filter: blur(10px); transform: translateY(0.35em); }
+  50% { opacity: 0.5; filter: blur(5px); transform: translateY(-0.035em); }
+  100% { opacity: 1; filter: none; transform: none; }
+}
+
+/* ---------- headings: last in the file ----------
+   Every heading element is Geist Bold, label-style headings included. */
+:is(h1, h2, h3, h4, h5, h6),
+:is(h1, h2, h3, h4, h5, h6)[class] {
+  font-family: var(--font-heading);
+  font-weight: 700;
+}
+
+.t-h4 {
+  font-weight: 700;
+}
+
+/* "Our Lexend" statements: reel statements, which are never heading elements. */
+.t-lexend-statement {
+  font-family: var(--font-our-lexend);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+/* ---------- Social links: round chips on the dark footer, an outlined pill on light cards ---------- */
+.hwf-social {
+  display: flex;
+  gap: 12px;
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.social-chip,
+.social-pill {
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--social-fg);
+  background-color: transparent;
+  border: 1px solid var(--social-line);
+  text-decoration: none;
+  transition:
+    transform 0.25s var(--ease),
+    background-color 0.2s var(--ease),
+    color 0.2s var(--ease),
+    border-color 0.2s var(--ease),
+    box-shadow 0.3s var(--ease);
+}
+
+.social-chip {
+  --social-fg: #e2e7f7;
+  --social-line: rgba(226, 231, 247, 0.4);
+  --social-hover-bg: #fff;
+  --social-hover-fg: #05070f;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+}
+
+.social-pill {
+  --social-fg: #05070f;
+  --social-line: #05070f;
+  --social-hover-bg: #05070f;
+  --social-hover-fg: #fff;
+  align-self: flex-start;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 18px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+}
+
+.social-icon {
+  flex: none;
+  transition: transform 0.25s var(--ease, cubic-bezier(0.16, 1, 0.3, 1));
+}
+
+.social-chip:hover,
+.social-chip:focus-visible,
+.social-pill:hover,
+.social-pill:focus-visible {
+  transform: translateY(-3px);
+  color: var(--social-hover-fg);
+  background-color: var(--social-hover-bg);
+  border-color: var(--social-hover-bg);
+  box-shadow: 0 0 0 4px rgba(79, 124, 255, 0.35);
+}
+
+.social-chip:hover .social-icon,
+.social-chip:focus-visible .social-icon,
+.social-pill:hover .social-icon,
+.social-pill:focus-visible .social-icon {
+  transform: scale(1.1);
+}
+
+.social-chip:focus-visible,
+.social-pill:focus-visible {
+  outline: 2px solid #9db6ff;
+  outline-offset: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .social-chip,
+  .social-pill,
+  .social-icon {
+    transition: color 0.2s, background-color 0.2s, border-color 0.2s;
+  }
+
+  .social-chip:hover,
+  .social-chip:focus-visible,
+  .social-pill:hover,
+  .social-pill:focus-visible,
+  .social-chip:hover .social-icon,
+  .social-chip:focus-visible .social-icon,
+  .social-pill:hover .social-icon,
+  .social-pill:focus-visible .social-icon {
+    transform: none;
+  }
 }

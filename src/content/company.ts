@@ -30,7 +30,8 @@ export const founder = {
     "Specialised engineering applications",
     "International industrial project execution",
   ],
-  /** Set to an approved photograph path in /public once supplied. Never use a generated portrait. */
+  linkedin: "https://www.linkedin.com/in/bhattaji-gururaj/",
+  /** Path of a photograph in /public. Never use a generated portrait. */
   photo: null as string | null,
 };
 

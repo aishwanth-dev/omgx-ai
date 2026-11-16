@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 /**
- * OMGX AI — standalone website configuration.
+ * OMGX AI - standalone website configuration.
  *
  * `cacheComponents` (and therefore `partialPrefetching`) is intentionally
  * disabled. With it enabled, Next.js keeps previously visited routes mounted
@@ -12,6 +12,10 @@ import type { NextConfig } from "next";
  */
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  // Next 16 blocks dev-only resources (the HMR WebSocket, /_next/* dev chunks) requested from any origin other than
+  // localhost. Opening the dev server as 127.0.0.1 or by LAN IP then fails the WebSocket handshake and the dev
+  // overlay reports it as an issue. Dev only; this has no effect on `next build` or production.
+  allowedDevOrigins: ["127.0.0.1", "192.168.*.*", "10.*.*.*"],
   poweredByHeader: false,
   async headers() {
     return [

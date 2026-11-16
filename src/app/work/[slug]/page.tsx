@@ -5,6 +5,8 @@ import { Breadcrumbs, CTABand } from "@/components/ui/PageHero";
 import { ProjectVisual } from "@/components/ui/ProjectVisual";
 import { capabilities } from "@/content/capabilities";
 import { getProject, projectDisplayName, projects, relatedProjects, workFilters } from "@/content/projects";
+import { RevealHeading } from "@/components/motion/RevealHeading";
+import { surfaceAttrs } from "@/lib/surfaces";
 
 export const dynamicParams = false;
 
@@ -46,11 +48,11 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
 
   return (
     <article className="project">
-      <header className="project__hero" data-theme="dark">
+      <header className="project__hero" {...surfaceAttrs("ink")}>
         <div className="container">
           <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Work", href: "/work" }, { label: p.title }]} />
           <p className="t-utility project__eyebrow">{p.client ? p.client.split(",")[0] : p.category}</p>
-          <h1 className="t-display-l project__title">{p.title}</h1>
+          <RevealHeading as="h1" className="t-display-l project__title" text={p.title} />
           <ul className="project__tags" aria-label="Disciplines">
             {tagLabels.map((t) => (
               <li key={t} className="chip">
@@ -62,7 +64,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
         </div>
       </header>
 
-      <section className="section section--tight" data-theme="dark" aria-label="Project record">
+      <section className="section section--tight" {...surfaceAttrs("ink")} aria-label="Project record">
         <div className="container project__grid">
           <aside className="project__facts" aria-label="Project facts">
             <dl>
@@ -127,35 +129,14 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
                 </ul>
               </section>
             )}
-
-            {p.notes?.map((n) => (
-              <p key={n} className="pending-note">
-                {n}
-              </p>
-            ))}
-
-            {p.detailsNotSupplied && (
-              <p className="pending-note">
-                Details not supplied. This entry is a concise factual summary; further technical detail, media and outcomes
-                have not been provided for publication.
-              </p>
-            )}
-
-            {!p.detailsNotSupplied && (
-              <p className="pending-note">
-                Outcome figures, project period and approved media have not been supplied, so none are shown.
-              </p>
-            )}
           </div>
         </div>
       </section>
 
       {related.length > 0 && (
-        <section className="section section--tight" data-theme="light" aria-labelledby="rel-h">
+        <section className="section section--tight" {...surfaceAttrs("mist")} aria-labelledby="rel-h">
           <div className="container">
-            <h2 id="rel-h" className="t-display">
-              Related projects
-            </h2>
+            <RevealHeading id="rel-h" className="t-display" text="Related projects" />
             <ul className="work-grid work-grid--compact" style={{ marginTop: 40 }}>
               {related.map((r) => (
                 <li key={r.slug}>
@@ -174,7 +155,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
         </section>
       )}
 
-      <nav className="project-pager" data-theme="dark" aria-label="More projects">
+      <nav className="project-pager" {...surfaceAttrs("ink")} aria-label="More projects">
         <div className="container project-pager__inner">
           <Link href={`/work/${prev.slug}`} className="project-pager__link">
             <span className="t-utility">← Previous</span>

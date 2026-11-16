@@ -1,0 +1,564 @@
+/* 3D scene styles: hero journey, About object, discipline stage, final CTA.
+   Imported from the scene components; loaded after home.css, so selectors here
+   carry an extra class where they override older rules. */
+
+/* ---------- hero: the next universe's bloom (behind the canvas) ---------- */
+
+.story .story__deep {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 150vmax;
+  height: 110vmax;
+  translate: -50% -50%;
+  opacity: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(closest-side, rgba(46, 96, 235, 0.32) 0%, rgba(80, 44, 160, 0.2) 24%, rgba(74, 10, 20, 0.28) 52%, rgba(74, 10, 20, 0) 78%);
+}
+
+/* ---------- About: the hero object in a calm pose, stage text underneath ---------- */
+
+.journey__num {
+  color: var(--accent-text);
+}
+
+.journey__center,
+.journey__title,
+.journey__body {
+  color: var(--fg);
+}
+
+.journey__body {
+  color: var(--fg-muted);
+}
+
+.journey .t-utility {
+  color: var(--accent-text);
+}
+
+.journey--static {
+  gap: 24px;
+}
+
+.journey--static .journey__ring {
+  grid-area: ring;
+}
+
+.journey__list {
+  grid-area: center;
+  display: grid;
+  gap: 20px;
+  width: min(100%, 440px);
+}
+
+.journey__item {
+  display: grid;
+  gap: 4px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+
+.journey__item .journey__title {
+  margin: 4px 0;
+}
+
+.journey-ring {
+  position: absolute;
+  inset: 0;
+  /* the rotating rider's square bounding box must not widen the page on narrow screens */
+  overflow: clip;
+  overflow-clip-margin: 14px;
+}
+
+.journey-ring__poster {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: opacity 0.6s ease;
+  pointer-events: none;
+}
+
+.journey-ring__orbit,
+.journey-ring__rider {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* The glowing dot rides a wrapper that turns clockwise, one quarter per stage, on an eased curve. */
+.journey-ring__rider {
+  transition: transform 0.45s cubic-bezier(0.65, 0, 0.35, 1);
+  will-change: transform;
+}
+
+.journey-ring__orbit::before {
+  content: "";
+  position: absolute;
+  inset: 2%;
+  border-radius: 50%;
+  border: 1px solid var(--line-strong, rgba(10, 15, 28, 0.18));
+}
+
+.journey-ring__dot {
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  translate: -50% -50%;
+  border-radius: 50%;
+  border: 1px solid var(--fg, #0a0f1c);
+  background: var(--surface, #eef1f8);
+  transition: width 0.4s ease, height 0.4s ease, background 0.4s ease, box-shadow 0.4s ease;
+}
+
+.journey-ring__dot--active {
+  width: 16px;
+  height: 16px;
+  border-color: var(--omgx-blue-light);
+  background: var(--omgx-blue-light);
+  box-shadow: 0 0 0 5px rgba(46, 96, 235, 0.22), 0 0 20px rgba(46, 96, 235, 0.75);
+}
+
+/* ---------- Final CTA: the returning object sits at the lower left, clear of the form ---------- */
+
+/* The hero object sits BEHIND the copy and the form: big, dim, partly off the left edge. */
+.final-cta .final-cta__visual {
+  left: -22vw;
+  right: auto;
+  top: 50%;
+  translate: 0 -50%;
+  width: min(84vw, 1180px);
+  opacity: 0.36;
+}
+
+/* The glow dies out before the bottom edge, and a last fade lands exactly on the footer colour,
+   so the section and the footer meet without a seam. */
+.final-cta .final-cta__glow {
+  background:
+    radial-gradient(62% 62% at 16% 70%, rgba(46, 96, 235, 0.34) 0%, rgba(11, 26, 74, 0.24) 48%, transparent 76%),
+    radial-gradient(48% 56% at 90% 78%, rgba(212, 33, 61, 0.22) 0%, rgba(74, 10, 20, 0.14) 50%, transparent 76%);
+}
+
+.final-cta::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: clamp(140px, 18vw, 280px);
+  z-index: -1;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    rgba(5, 7, 15, 0) 0%,
+    rgba(5, 7, 15, 0.18) 22%,
+    rgba(5, 7, 15, 0.5) 50%,
+    rgba(5, 7, 15, 0.82) 78%,
+    #05070f 100%
+  );
+}
+
+@media (max-width: 900px) {
+  .final-cta .final-cta__visual {
+    left: -34vw;
+    top: 36%;
+    width: 128vw;
+    opacity: 0.3;
+  }
+}
+
+/* ---------- Disciplines: the static glyph fallback fills the stage ---------- */
+
+.cap-visual__fallback {
+  display: grid;
+  place-items: center;
+}
+
+.cap-visual__fallback .glyph {
+  width: min(78%, 420px);
+  height: auto;
+}
+
+/* ---------- Disciplines on phones and tablets ----------
+   Heading and intro first, then the model stage as a 4:3 rounded card pinned just under the
+   header (opaque strip around it, so rows scroll cleanly beneath), then the four rows as cards.
+   Only the open card shows its text, and the list reserves the tallest card, so opening one
+   never moves the stage or the content beneath. Short landscape screens do not pin the stage. */
+
+@media (max-width: 960px) {
+  .caps {
+    --cap-card-h: min(44svh, calc((100vw - 2 * var(--gutter)) * 0.75));
+    --cap-stage-h: calc(var(--cap-card-h) + 20px);
+    --cap-pad: 16px;
+    --cap-gap: 10px;
+  }
+
+  .caps .caps__body {
+    display: block;
+  }
+
+  .caps .cap-visual {
+    position: sticky;
+    top: var(--header-h);
+    z-index: 2;
+    aspect-ratio: auto;
+    height: auto;
+    min-height: 0;
+    margin: 0;
+    padding: 8px 0 12px;
+    background-color: var(--surface-hex);
+  }
+
+  .caps .cap-visual__canvas {
+    position: relative;
+    inset: auto;
+    width: min(100%, calc(var(--cap-card-h) * 4 / 3));
+    height: var(--cap-card-h);
+    margin-inline: auto;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    background-color: var(--surface-2);
+    overflow: hidden;
+  }
+
+  .caps .cap-visual__labels,
+  .caps .cap-visual__lines,
+  .caps .cap-visual__caption {
+    display: none;
+  }
+
+  .caps .caps__tablist {
+    display: grid;
+    gap: var(--cap-gap);
+    align-content: start;
+    border-top: 0;
+  }
+
+  .caps .cap-row {
+    padding: 0 var(--cap-pad);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-m);
+    scroll-margin-top: calc(var(--header-h) + var(--cap-stage-h) + 12px);
+    transition: border-color 0.3s, background-color 0.3s;
+  }
+
+  .caps .cap-row.is-active {
+    border-color: var(--line-strong);
+    background-color: var(--surface-2);
+  }
+
+  .caps .cap-row__tab {
+    gap: 14px;
+    padding: 14px 0;
+    min-height: 58px;
+  }
+
+  .caps .cap-row__title {
+    font-size: clamp(17px, 4.6vw, 22px);
+    line-height: 1.2;
+    overflow-wrap: anywhere;
+  }
+
+  .caps .cap-row__panel-inner {
+    padding: 0 0 var(--cap-pad);
+  }
+
+  .caps .cap-row__panel-inner > p {
+    max-width: 60ch;
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.55;
+  }
+
+  .caps .cap-row__tags {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin: 16px 0 8px;
+    padding: 0;
+    list-style: none;
+  }
+
+  .caps .cap-row__tags .chip {
+    justify-content: center;
+    min-height: 36px;
+    padding: 8px 10px;
+    text-align: center;
+    white-space: normal;
+  }
+
+  .caps .cap-row__panel-inner .link-arrow {
+    position: relative;
+    margin-block: 14px 4px;
+    padding-block: 4px;
+  }
+
+  /* Invisible hit area: the link itself stays a tidy underlined line, the tap target is 44px+. */
+  .caps .cap-row__panel-inner .link-arrow::after {
+    content: "";
+    position: absolute;
+    inset: -14px 0;
+  }
+
+  .caps .caps__measure {
+    padding-inline: calc(var(--cap-pad) + 1px);
+  }
+
+  .caps .caps__all {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    min-height: 48px;
+    margin-top: 24px;
+  }
+}
+
+/* Short landscape screens: no pinning, a smaller card in the flow. */
+@media (max-width: 960px) and (max-height: 520px) {
+  .caps {
+    --cap-card-h: min(64svh, calc((100vw - 2 * var(--gutter)) * 0.75));
+  }
+
+  .caps .cap-visual {
+    position: relative;
+    top: auto;
+  }
+}
+/* Phones and tablets with motion: the stage is pinned on top for a short track (200svh of scroll, 50svh per card) and
+   the four cards stack below it like the process deck. Card k slides up from the bottom of the card area (JS sets
+   transform and opacity from the scroll progress) and lands one bar (--bar) below the previous card, so the opened
+   cards pile up as title bars with the newest one open. The area has a fixed height, so no card can reach the stage. */
+.caps .caps__progress {
+  display: none;
+}
+
+@media (max-width: 960px) and (min-height: 521px) {
+  html.motion .caps {
+    --cap-card-h: min(36svh, 340px);
+    --bar: 38px;
+  }
+
+  html.motion .caps__track {
+    height: calc(100vh + 200vh);
+    height: calc(100svh + 200svh);
+  }
+
+  html.motion .caps__stage {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    height: 100vh;
+    height: 100svh;
+    padding-top: var(--header-h);
+    background-color: var(--surface-hex);
+    overflow: hidden;
+  }
+
+  html.motion .caps .caps__body {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    height: 100%;
+  }
+
+  html.motion .caps .cap-visual {
+    position: relative;
+    top: auto;
+    flex: none;
+    padding: 6px 0 8px;
+  }
+
+  html.motion .caps .caps__list {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-bottom: 12px;
+  }
+
+  html.motion .caps .caps__progress {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+    flex: none;
+  }
+
+  html.motion .caps .caps__progress span {
+    height: 3px;
+    border-radius: 2px;
+    background-color: var(--line-strong);
+    transition: background-color 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  html.motion .caps .caps__progress span.is-on {
+    background-color: var(--fg);
+  }
+
+  /* The card area: fixed height (what is left under the stage), cards stacked inside it. */
+  html.motion .caps .caps__tablist {
+    position: relative;
+    display: block;
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  /* Card i sits at slot i (i bars down) and runs to the bottom of the area; unopened cards wait below it. */
+  html.motion .caps .cap-row {
+    --cap-pad: 14px;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: calc(var(--i, 0) * var(--bar));
+    height: calc(100% - var(--i, 0) * var(--bar));
+    padding: 0 var(--cap-pad);
+    overflow: hidden;
+    background-color: var(--surface-2);
+    border-color: var(--line-strong);
+    box-shadow: 0 -6px 14px rgba(10, 15, 28, 0.06);
+    will-change: transform;
+    scroll-margin-top: 0;
+    transition: none;
+  }
+
+  html.motion .caps .cap-row:not(:first-child) {
+    transform: translate3d(0, 100%, 0);
+  }
+
+  /* Dimming covered cards: opacity on the content, so the card itself stays opaque and nothing shows through. */
+  html.motion .caps .cap-row > * {
+    opacity: var(--dim, 1);
+  }
+
+  html.motion .caps .cap-row__tab {
+    min-height: 0;
+    height: calc(var(--bar) - 1px);
+    padding: 0;
+    gap: 10px;
+  }
+
+  html.motion .caps .cap-row__num {
+    width: 24px;
+    height: 24px;
+    font-size: 11px;
+  }
+
+  html.motion .caps .cap-row__title {
+    font-size: clamp(15px, 4vw, 18px);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  html.motion .caps .cap-row__panel-inner {
+    padding: 4px 0 var(--cap-pad);
+  }
+
+  html.motion .caps .cap-row__panel-inner > p {
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  html.motion .caps .cap-row__tags {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+    margin: 10px 0 2px;
+  }
+
+  html.motion .caps .cap-row__tags .chip {
+    min-height: 28px;
+    padding: 4px 8px;
+    font-size: 11px;
+    line-height: 1.2;
+  }
+
+  html.motion .caps .cap-row__panel-inner .link-arrow {
+    margin-block: 8px 0;
+  }
+
+  /* The list's own button moves below the track, so the pin releases straight onto it. */
+  html.motion .caps .caps__list .caps__all {
+    display: none;
+  }
+
+  html.motion .caps .caps__after {
+    padding-top: 28px;
+  }
+}
+/* Short phones (about 740px tall): a smaller stage and thinner bars, so the newest card keeps its link in view. */
+@media (max-width: 960px) and (min-height: 521px) and (max-height: 780px) {
+  html.motion .caps {
+    --cap-card-h: min(31svh, 340px);
+    --bar: 34px;
+  }
+
+  html.motion .caps .cap-row__tags .chip {
+    font-size: 10px;
+    letter-spacing: 0.04em;
+  }
+}
+/* ---------- Disciplines: labels in a ring around the model, with radial leaders that stop at its circle ---------- */
+
+.caps .cap-ring-wrap,
+.caps .cap-ring {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.caps .cap-ring__lines {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.caps .cap-ring__line {
+  stroke: var(--omgx-ink);
+  stroke-width: 1;
+}
+
+.caps .cap-ring__dot {
+  fill: var(--omgx-ink);
+}
+
+.caps .cap-ring__labels {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.caps .cap-ring__label {
+  position: absolute;
+}
+
+.caps .cap-ring__label--tl {
+  left: 0;
+  top: 0;
+}
+
+.caps .cap-ring__label--tr {
+  right: 0;
+  top: 14%;
+}
+
+.caps .cap-ring__label--bl {
+  left: 0;
+  bottom: 14%;
+}
+
+.caps .cap-ring__label--br {
+  right: 0;
+  bottom: 0;
+}
+
+@media (max-width: 960px) {
+  .caps .cap-ring-wrap {
+    display: none;
+  }
+}

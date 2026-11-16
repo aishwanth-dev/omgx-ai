@@ -15,7 +15,7 @@ const eslintConfig = defineConfig([
       "react-hooks/immutability": "off",
     },
   },
-  globalIgnores([".next/**", "out/**", "build/**", "next-env.d.ts", ".cache/**", "qa-output/**", "scripts/**"]),
+  globalIgnores([".next/**", "out/**", "build/**", "next-env.d.ts", ".cache/**", "qa-output/**", "scripts/**", "public/draco/**"]),
 ]);
 
 export default eslintConfig;

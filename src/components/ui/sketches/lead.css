@@ -1,0 +1,328 @@
+/* ---------- lead sketches: scada, data, assembly, servo ---------- */
+
+/* hidden until their loop shows them */
+.sketch--scada .sc-lamp,
+.sketch--data .dt-fill,
+.sketch--assembly .as-pin,
+.sketch--assembly .as-screw,
+.sketch--assembly .as-ok,
+.sketch--assembly .as-tq,
+.sketch--assembly .as-cone,
+.sketch--assembly .as-cam,
+.sketch--assembly .as-frame,
+.sketch--assembly .as-part,
+.sketch--servo .sv-z,
+.sketch--servo .sv-cursor,
+.sketch--servo .sv-led {
+  opacity: 0;
+}
+
+/* ---- scada ---- */
+
+.sketch--scada .sc-lamp {
+  fill: var(--sk-blue);
+  stroke: none;
+}
+
+.sketch--scada .sc-lamp--nok {
+  fill: var(--sk-red);
+}
+
+.sketch--scada .sc-belt {
+  stroke-dasharray: 4 6;
+}
+
+.sketch--scada.sketch[data-run="1"] .sc-lamp {
+  animation: sc-lamp var(--cyc) ease-out calc(var(--loop) + var(--l, 0s)) infinite both;
+}
+
+.sketch--scada.sketch[data-run="1"] .sc-trend {
+  animation: sc-trend var(--cyc) linear var(--loop) infinite both;
+}
+
+.sketch--scada.sketch[data-run="1"] .sc-belt {
+  animation: lead-belt 0.6s linear var(--loop) infinite;
+}
+
+@keyframes sc-lamp {
+  0% { opacity: 0; }
+  3%, 50% { opacity: 1; }
+  56%, 100% { opacity: 0; }
+}
+
+@keyframes sc-trend {
+  to { transform: translateX(-72px); }
+}
+
+@keyframes lead-belt {
+  to { stroke-dashoffset: -10; }
+}
+
+/* ---- data ---- */
+
+.sketch--data .dt-fill {
+  fill: var(--sk-blue);
+  fill-opacity: 0.16;
+  stroke: none;
+}
+
+.sketch--data .dt-bar {
+  fill: var(--sk-blue);
+  fill-opacity: 0.18;
+  stroke: var(--sk-blue);
+  stroke-opacity: 0.85;
+  stroke-width: 1.1;
+  vector-effect: non-scaling-stroke;
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+}
+
+.sketch--data .dt-bar {
+  opacity: 0;
+  transition: opacity 0.6s ease 1.6s;
+}
+
+.sketch--data[data-drawn] .dt-bar {
+  opacity: 1;
+}
+
+.sketch--data.sketch[data-run="1"] .dt-fill {
+  animation: dt-fill var(--cyc) ease-out calc(var(--loop) + var(--l, 0s)) infinite both;
+}
+
+.sketch--data.sketch[data-run="1"] .dt-bar {
+  animation: dt-bar var(--cyc) cubic-bezier(0.22, 1, 0.36, 1) calc(var(--loop) + var(--l, 0s)) infinite both;
+}
+
+@keyframes dt-fill {
+  0% { opacity: 0; }
+  6%, 45% { opacity: 1; }
+  55%, 100% { opacity: 0; }
+}
+
+@keyframes dt-bar {
+  0% { transform: scaleY(0.04); }
+  18%, 55% { transform: scaleY(1); }
+  70%, 100% { transform: scaleY(0.04); }
+}
+
+/* ---- assembly ---- */
+
+.sketch--assembly .as-belt {
+  stroke-dasharray: 4 6;
+}
+
+.sketch--assembly .as-roll {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.sketch--assembly .as-cone {
+  fill: var(--sk-blue);
+  fill-opacity: 0.22;
+  stroke: none;
+}
+
+.sketch--assembly .as-cam {
+  fill: var(--sk-blue);
+  stroke: none;
+}
+
+.sketch--assembly.sketch[data-run="1"] .as-belt {
+  animation: lead-belt 0.6s linear var(--loop) infinite;
+}
+
+.sketch--assembly.sketch[data-run="1"] .as-roll {
+  animation: sk-spin 1.6s linear var(--loop) infinite;
+}
+
+.sketch--assembly.sketch[data-run="1"] .as-part {
+  animation: as-part var(--cyc) ease-in-out var(--loop) infinite both;
+}
+
+.sketch--assembly.sketch[data-run="1"] .as-ram {
+  animation: as-ram var(--cyc) ease-in-out var(--loop) infinite both;
+}
+
+.sketch--assembly.sketch[data-run="1"] .as-pin {
+  animation: as-pin var(--cyc) linear var(--loop) infinite both;
+}
+
+.sketch--assembly.sketch[data-run="1"] .as-drv {
+  animation: as-drv var(--cyc) ease-in-out var(--loop) infinite both;
+}
+
+.sketch--assembly.sketch[data-run="1"] .as-tq {
+  animation: as-tq var(--cyc) linear var(--loop) infinite both;
+}
+
+.sketch--assembly.sketch[data-run="1"] .as-screw {
+  animation: as-screw var(--cyc) linear var(--loop) infinite both;
+}
+
+.sketch--assembly.sketch[data-run="1"] .as-cone,
+.sketch--assembly.sketch[data-run="1"] .as-cam {
+  animation: as-cone var(--cyc) ease-out var(--loop) infinite both;
+}
+
+.sketch--assembly.sketch[data-run="1"] .as-frame {
+  animation: as-frame var(--cyc) linear var(--loop) infinite both;
+}
+
+.sketch--assembly.sketch[data-run="1"] .as-ok {
+  animation: as-ok var(--cyc) linear var(--loop) infinite both;
+}
+
+/* stops: press 12-26%, screw 34-48%, vision 56-72%, then out */
+@keyframes as-part {
+  0% { transform: translateX(0); opacity: 0; }
+  4% { opacity: 1; }
+  12%, 26% { transform: translateX(65px); }
+  34%, 48% { transform: translateX(155px); }
+  56%, 72% { transform: translateX(245px); }
+  84% { transform: translateX(335px); opacity: 1; }
+  90%, 100% { transform: translateX(335px); opacity: 0; }
+}
+
+@keyframes as-ram {
+  0%, 14% { transform: translateY(0); }
+  17%, 21% { transform: translateY(22px); }
+  24%, 100% { transform: translateY(0); }
+}
+
+@keyframes as-pin {
+  0%, 17.9% { opacity: 0; }
+  18%, 100% { opacity: 1; }
+}
+
+@keyframes as-drv {
+  0%, 36% { transform: translateY(0); }
+  39%, 44% { transform: translateY(20px); }
+  47%, 100% { transform: translateY(0); }
+}
+
+@keyframes as-tq {
+  0%, 38.9% { opacity: 0; }
+  39%, 44% { opacity: 1; }
+  45%, 100% { opacity: 0; }
+}
+
+@keyframes as-screw {
+  0%, 43.9% { opacity: 0; }
+  44%, 100% { opacity: 1; }
+}
+
+@keyframes as-cone {
+  0%, 60% { opacity: 0; }
+  61% { opacity: 1; }
+  65%, 100% { opacity: 0; }
+}
+
+@keyframes as-frame {
+  0%, 60.9% { opacity: 0; }
+  61%, 70% { opacity: 1; }
+  71%, 100% { opacity: 0; }
+}
+
+@keyframes as-ok {
+  0%, 63.9% { opacity: 0; }
+  64%, 100% { opacity: 1; }
+}
+
+/* ---- servo ---- */
+
+.sketch--servo .sv-led {
+  fill: var(--sk-blue);
+  stroke: none;
+}
+
+.sketch--servo .sv-z {
+  fill: var(--sk-red);
+  stroke: none;
+}
+
+.sketch--servo .sv-disc {
+  transform-origin: 336px 86px;
+}
+
+.sketch--servo .sv-sine {
+  vector-effect: none;
+  stroke-width: 1.3;
+  stroke-dasharray: 1 1;
+  stroke-dashoffset: 1;
+}
+
+.sketch--servo.sketch[data-run="1"] .sv-disc {
+  animation: sk-spin var(--cyc) linear var(--loop) infinite;
+}
+
+.sketch--servo.sketch[data-run="1"] .sv-z {
+  animation: sv-z var(--cyc) linear var(--loop) infinite both;
+}
+
+.sketch--servo.sketch[data-run="1"] .sv-pwm {
+  animation: sv-pwm 1s linear var(--loop) infinite;
+}
+
+.sketch--servo.sketch[data-run="1"] .sv-sine {
+  animation: sv-sine var(--cyc) linear var(--loop) infinite both;
+}
+
+.sketch--servo.sketch[data-run="1"] .sv-cursor {
+  animation: sv-cursor var(--cyc) linear var(--loop) infinite both;
+}
+
+.sketch--servo.sketch[data-run="1"] .sv-led {
+  animation: sk-blink 1.2s steps(1) var(--loop) infinite both;
+}
+
+@keyframes sv-z {
+  0% { opacity: 1; }
+  6%, 100% { opacity: 0; }
+}
+
+@keyframes sv-pwm {
+  to { transform: translateX(-20px); }
+}
+
+@keyframes sv-sine {
+  0% { stroke-dashoffset: 1; opacity: 1; }
+  80% { stroke-dashoffset: 0; opacity: 1; }
+  92% { stroke-dashoffset: 0; opacity: 1; }
+  100% { stroke-dashoffset: 0; opacity: 0; }
+}
+
+@keyframes sv-cursor {
+  0% { transform: translateX(0); opacity: 0.9; }
+  80% { transform: translateX(220px); opacity: 0.9; }
+  81%, 100% { transform: translateX(220px); opacity: 0; }
+}
+
+/* reduced motion: a finished, readable state (kit.css stops the animations) */
+@media (prefers-reduced-motion: reduce) {
+  .sketch--scada .sc-lamp,
+  .sketch--data .dt-fill,
+  .sketch--assembly .as-part,
+  .sketch--assembly .as-pin,
+  .sketch--assembly .as-screw,
+  .sketch--assembly .as-ok,
+  .sketch--assembly .as-frame,
+  .sketch--servo .sv-led {
+    opacity: 1;
+    transition: none;
+  }
+
+  .sketch--data .dt-bar {
+    opacity: 1;
+    transition: none;
+  }
+
+  /* the finished part waits at the vision station */
+  .sketch--assembly .as-part {
+    transform: translateX(245px);
+  }
+
+  .sketch--servo .sv-sine {
+    stroke-dashoffset: 0;
+  }
+}

@@ -1,0 +1,31 @@
+/* RouteGlobe (src/components/globe/RouteGlobe.tsx). Section layout and label chips stay in home.css. */
+
+.globe__visual .globe__stage {
+  position: absolute;
+  inset: 0;
+}
+
+.globe__visual .globe__canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  /* Vertical swipes scroll the page; only horizontal drags spin the globe. */
+  touch-action: pan-y;
+  cursor: grab;
+}
+
+.globe__visual .globe__stage[data-dragging] .globe__canvas {
+  cursor: grabbing;
+}
+
+.globe__visual .globe__labels {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.globe__visual .globe__label {
+  opacity: 0;
+}

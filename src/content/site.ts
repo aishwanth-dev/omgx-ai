@@ -1,7 +1,4 @@
-/**
- * Site-wide configuration. Contact details come only from environment
- * variables so nothing is invented. Empty values render as "to be confirmed".
- */
+/** Site-wide configuration and the single source of truth for company contact details. */
 
 const clean = (value: string | undefined) => (value && value.trim().length > 0 ? value.trim() : null);
 
@@ -16,11 +13,26 @@ export const site = {
     "OMGX AI is a multidisciplinary technology and engineering company building intelligent systems, advanced automation solutions, immersive technologies and integrated hardware–software systems.",
   url: clean(process.env.NEXT_PUBLIC_OMGX_SITE_URL) ?? "http://localhost:3000",
   contact: {
-    email: clean(process.env.NEXT_PUBLIC_OMGX_CONTACT_EMAIL),
-    phone: clean(process.env.NEXT_PUBLIC_OMGX_CONTACT_PHONE),
-    address: clean(process.env.NEXT_PUBLIC_OMGX_CONTACT_ADDRESS),
-    linkedin: clean(process.env.NEXT_PUBLIC_OMGX_LINKEDIN_URL),
+    supportEmail: "support@omgxai.com",
+    salesEmail: "sales@omgxai.com",
+    /** Address as display lines, top to bottom. */
+    addressLines: [
+      "No 15, 5th Main Road, Ramanjeneya Nagar",
+      "Chikkalsandra",
+      "Bengaluru, Karnataka 560061",
+      "India",
+    ] as readonly string[],
+    /** Single-line form for schema and meta. */
+    addressLine: "No 15, 5th Main Road, Ramanjeneya Nagar, Chikkalsandra, Bengaluru, Karnataka, India - 560061",
+    postal: {
+      streetAddress: "No 15, 5th Main Road, Ramanjeneya Nagar, Chikkalsandra",
+      addressLocality: "Bengaluru",
+      addressRegion: "Karnataka",
+      postalCode: "560061",
+      addressCountry: "IN",
+    },
   },
+  x: { handle: "@omgxai", url: "https://x.com/omgxai" },
   /**
    * OMG Collections is a ladies' fashion retail initiative. The profile says it
    * may be shown only if approved for public inclusion. Hidden until approved.
@@ -34,4 +46,11 @@ export const primaryNav = [
   { label: "Products & R&D", href: "/products-research" },
   { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
+];
+
+export type SocialIconKey = "x" | "linkedin";
+
+/** Company social profiles, shown as icon links in the footer. */
+export const socials: { label: string; href: string; icon: SocialIconKey }[] = [
+  { label: "OMGX AI on X", href: site.x.url, icon: "x" },
 ];

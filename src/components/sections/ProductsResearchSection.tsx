@@ -1,16 +1,16 @@
 import Link from "next/link";
 import { InitiativeList } from "@/components/ui/InitiativeList";
+import { RevealHeading } from "@/components/motion/RevealHeading";
+import { surfaceAttrs } from "@/lib/surfaces";
 
 export function ProductsResearchSection() {
   return (
-    <section className="section products" data-theme="light" aria-labelledby="products-title">
+    <section className="section products" {...surfaceAttrs("mist")} aria-labelledby="products-title">
       <div className="container">
         <div className="products__head">
           <div>
             <p className="t-utility">Products, concepts &amp; research</p>
-            <h2 id="products-title" className="t-display-l">
-              Ideas, systems and research in motion.
-            </h2>
+            <RevealHeading id="products-title" className="t-display-l" text="Ideas, systems and research in motion." />
           </div>
           <div>
             <p className="t-lead muted">

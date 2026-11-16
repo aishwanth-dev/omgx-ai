@@ -6,6 +6,8 @@ import { AnimatePresence, motion } from "motion/react";
 import { initiativeTypeLabels, publicInitiatives } from "@/content/initiatives";
 import { projects, workFilters, type FilterKey, type VisualKind } from "@/content/projects";
 import { ProjectVisual } from "./ProjectVisual";
+import { initiativeSketchFor } from "./sketches/initiatives";
+import type { SketchDef } from "./sketches/kit";
 
 type Entry = {
   key: string;
@@ -17,6 +19,7 @@ type Entry = {
   summary: string;
   tags: FilterKey[];
   visual: VisualKind;
+  sketch?: { id: string; def: SketchDef } | null;
   kind: "project" | "initiative";
 };
 
@@ -38,10 +41,10 @@ const ENTRIES: Entry[] = [
     href: `/products-research#${i.slug}`,
     title: i.name,
     category: initiativeTypeLabels[i.type].label,
-    status: i.status,
     summary: i.description,
     tags: i.tags,
     visual: i.type === "research" ? "research" : "agent",
+    sketch: initiativeSketchFor(i),
     kind: "initiative",
   })),
 ];
@@ -97,7 +100,7 @@ export function WorkDirectory() {
               transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
             >
               <Link href={e.href} className={`work-card work-card--${e.kind}`}>
-                <ProjectVisual kind={e.visual} tone="dark" caption={false} />
+                <ProjectVisual kind={e.visual} sketch={e.sketch} tone="dark" caption={false} />
                 <span className="work-card__client t-utility">
                   {e.kind === "initiative" ? "OMGX AI initiative" : (e.client ?? "Project")}
                 </span>
@@ -105,7 +108,7 @@ export function WorkDirectory() {
                 <span className="work-card__meta">
                   <span className="chip">{e.category}</span>
                   {e.status && (
-                    <span className={`chip ${e.status === "Status to be confirmed" ? "chip--pending" : "chip--accent"}`}>{e.status}</span>
+                    <span className="chip chip--accent">{e.status}</span>
                   )}
                 </span>
                 <span className="work-card__summary">{e.summary}</span>

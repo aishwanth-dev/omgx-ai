@@ -3,6 +3,8 @@ import Link from "next/link";
 import { CapabilityGlyph } from "@/components/ui/CapabilityGlyph";
 import { CTABand, PageHero } from "@/components/ui/PageHero";
 import { capabilities, customRnd } from "@/content/capabilities";
+import { RevealHeading } from "@/components/motion/RevealHeading";
+import { surfaceAttrs } from "@/lib/surfaces";
 
 export const metadata: Metadata = {
   title: "Capabilities",
@@ -16,28 +18,21 @@ export default function CapabilitiesPage() {
     <>
       <PageHero
         eyebrow="Capabilities"
-        title={
-          <>
-            Four disciplines.
-            <br />
-            One engineering mindset.
-          </>
-        }
+        title={["Four disciplines.", "One engineering mindset."]}
         lead="OMGX AI works across the software and physical systems needed to solve complex problems, from AI applications and intelligent workflows to industrial control, immersive simulations and integrated hardware."
         crumbs={[{ label: "Home", href: "/" }, { label: "Capabilities" }]}
       />
 
-      <section className="section" data-theme="light" aria-label="The four disciplines">
+      <section className="section" {...surfaceAttrs("mist")} aria-label="The four disciplines">
         <div className="container">
           <ol className="cap-index">
             {capabilities.map((c) => (
               <li key={c.slug}>
-                <Link href={`/capabilities/${c.slug}`} className={`cap-card cap-card--${c.slug}`}>
+                <Link href={`/capabilities/${c.slug}`} className={`cap-card cap-card--${c.slug}`} data-label={c.title}>
                   <div className="cap-card__visual">
-                    <CapabilityGlyph slug={c.slug} />
+                    <CapabilityGlyph slug={c.slug} variant="card" />
                   </div>
                   <div className="cap-card__body">
-                    <span className="cap-card__index">{c.index}</span>
                     <h2 className="t-h3">{c.title}</h2>
                     <p className="muted">{c.positioning}</p>
                     <ul className="cap-card__list">
@@ -56,23 +51,18 @@ export default function CapabilitiesPage() {
         </div>
       </section>
 
-      <section className="section section--tight" data-theme="dark" aria-labelledby="rnd-title">
+      <section className="section section--tight" {...surfaceAttrs("ink")} aria-labelledby="rnd-title">
         <div className="container rnd">
           <div>
             <p className="t-utility">Across all four</p>
-            <h2 id="rnd-title" className="t-display">
-              {customRnd.title}
-            </h2>
+            <RevealHeading id="rnd-title" className="t-display" text={customRnd.title} />
             <p className="t-lead muted" style={{ marginTop: 20 }}>
               {customRnd.note}
             </p>
           </div>
           <ul className="rnd__list">
-            {customRnd.items.map((i, n) => (
-              <li key={i}>
-                <span>{String(n + 1).padStart(2, "0")}</span>
-                {i}
-              </li>
+            {customRnd.items.map((i) => (
+              <li key={i}>{i}</li>
             ))}
           </ul>
         </div>

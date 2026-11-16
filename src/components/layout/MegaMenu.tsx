@@ -32,8 +32,7 @@ export function MegaMenu({ which, onNavigate }: { which: MegaKey; onNavigate: ()
             <ul className="mega__grid">
               {capabilities.map((c) => (
                 <li key={c.slug} style={{ display: "contents" }}>
-                  <Link href={`/capabilities/${c.slug}`} className="mega__item" onClick={onNavigate}>
-                    <span className="mega__item-index">{c.index}</span>
+                  <Link href={`/capabilities/${c.slug}`} className="mega__item" data-label={c.title} onClick={onNavigate}>
                     <span className="mega__item-title">{c.title}</span>
                     <span className="mega__item-body">{c.positioning}</span>
                   </Link>
@@ -55,7 +54,7 @@ export function MegaMenu({ which, onNavigate }: { which: MegaKey; onNavigate: ()
             <ul className="mega__grid mega__grid--work">
               {workFilters
                 .filter((f) => f.key !== "all")
-                .map((f, i) => (
+                .map((f) => (
                   <li key={f.key} style={{ display: "contents" }}>
                     <Link
                       href={`/work?filter=${f.key}`}
@@ -63,20 +62,17 @@ export function MegaMenu({ which, onNavigate }: { which: MegaKey; onNavigate: ()
                       style={{ minHeight: 110 }}
                       onClick={onNavigate}
                     >
-                      <span className="mega__item-index">{String(i + 1).padStart(2, "0")}</span>
                       <span className="mega__item-title">{f.label}</span>
                     </Link>
                   </li>
                 ))}
               <li style={{ display: "contents" }}>
                 <Link href="/products-research" className="mega__item" style={{ minHeight: 110 }} onClick={onNavigate}>
-                  <span className="mega__item-index">R&amp;D</span>
                   <span className="mega__item-title">Products, concepts &amp; research</span>
                 </Link>
               </li>
               <li style={{ display: "contents" }}>
                 <Link href="/contact" className="mega__item" style={{ minHeight: 110 }} onClick={onNavigate}>
-                  <span className="mega__item-index">→</span>
                   <span className="mega__item-title">Discuss a project</span>
                 </Link>
               </li>

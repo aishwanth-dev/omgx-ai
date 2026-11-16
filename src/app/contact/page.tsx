@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Breadcrumbs } from "@/components/ui/PageHero";
 import { ContactForm } from "@/components/ui/ContactForm";
 import { site } from "@/content/site";
+import { RevealHeading } from "@/components/motion/RevealHeading";
+import { surfaceAttrs } from "@/lib/surfaces";
 
 export const metadata: Metadata = {
   title: "Contact",
@@ -10,49 +12,39 @@ export const metadata: Metadata = {
 };
 
 export default function ContactPage() {
-  const { email, phone, address, linkedin } = site.contact;
-  const rows = [
-    { label: "Email", value: email, href: email ? `mailto:${email}` : undefined },
-    { label: "Phone", value: phone, href: phone ? `tel:${phone.replace(/\s+/g, "")}` : undefined },
-    { label: "Address", value: address },
-    { label: "LinkedIn", value: linkedin ? "OMGX AI on LinkedIn" : null, href: linkedin ?? undefined },
-  ];
+  const { supportEmail, addressLines } = site.contact;
 
   return (
-    <section className="contact" data-theme="dark">
+    <section className="contact" {...surfaceAttrs("ink")}>
       <div className="contact__glow" aria-hidden="true" />
       <div className="container contact__inner">
         <div className="contact__copy">
           <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Contact" }]} />
           <p className="t-utility">Contact</p>
-          <h1 className="t-display-xl contact__title">
-            Let&apos;s engineer
-            <br />
-            the details.
-          </h1>
+          <RevealHeading as="h1" className="t-display-xl contact__title" text={["Let's engineer", "the details."]} />
           <p className="t-lead muted">
             Tell us about the challenge: the process or product, the constraints, and what the system needs to do. We&apos;ll
             start by understanding the problem.
           </p>
           <dl className="contact__details">
-            {rows.map((r) => (
-              <div key={r.label} className="contact__detail">
-                <dt className="t-utility">{r.label}</dt>
-                <dd>
-                  {r.value ? (
-                    r.href ? (
-                      <a href={r.href} {...(r.label === "LinkedIn" ? { target: "_blank", rel: "noopener noreferrer" } : {})}>
-                        {r.value}
-                      </a>
-                    ) : (
-                      r.value
-                    )
-                  ) : (
-                    <span className="muted">To be confirmed</span>
-                  )}
-                </dd>
-              </div>
-            ))}
+            <div className="contact__detail">
+              <dt className="t-utility">Email</dt>
+              <dd>
+                <a href={`mailto:${supportEmail}`}>{supportEmail}</a>
+              </dd>
+            </div>
+            <div className="contact__detail">
+              <dt className="t-utility">Address</dt>
+              <dd>
+                <address style={{ fontStyle: "normal" }}>
+                  {addressLines.map((line) => (
+                    <span key={line} style={{ display: "block" }}>
+                      {line}
+                    </span>
+                  ))}
+                </address>
+              </dd>
+            </div>
           </dl>
         </div>
         <div className="contact__form">
