@@ -4,7 +4,6 @@ import { CTABand, PageHero } from "@/components/ui/PageHero";
 import { surfaceAttrs } from "@/lib/surfaces";
 
 export const metadata: Metadata = {
-  title: "Products & R&D",
   description:
     "OMGX AI products and applications, platform concepts and research initiatives, each labelled by type.",
   alternates: { canonical: "/products-research" },

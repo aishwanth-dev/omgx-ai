@@ -7,7 +7,6 @@ import { RevealHeading } from "@/components/motion/RevealHeading";
 import { surfaceAttrs } from "@/lib/surfaces";
 
 export const metadata: Metadata = {
-  title: "Capabilities",
   description:
     "Four disciplines: Artificial Intelligence & Machine Learning, Industrial Automation & Robotics, Immersive Technologies (AR / VR / XR) and Hardware Engineering & Integration.",
   alternates: { canonical: "/capabilities" },

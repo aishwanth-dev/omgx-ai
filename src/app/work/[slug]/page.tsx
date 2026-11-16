@@ -18,12 +18,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const p = getProject(slug);
   if (!p) return {};
-  const title = projectDisplayName(p);
   return {
-    title,
     description: p.summary,
     alternates: { canonical: `/work/${p.slug}` },
-    openGraph: { title: `${title} — OMGX AI`, description: p.summary, url: `/work/${p.slug}` },
+    openGraph: { title: "OMGX AI", description: p.summary, url: `/work/${p.slug}` },
   };
 }
 

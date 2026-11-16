@@ -11,7 +11,6 @@ import { RevealHeading } from "@/components/motion/RevealHeading";
 import { surfaceAttrs } from "@/lib/surfaces";
 
 export const metadata: Metadata = {
-  title: "About",
   description:
     "OMGX AI Private Limited, formerly Bona fide Digital Services: an engineering-led company expanding from industrial automation into AI, robotics, immersive technologies and advanced engineering.",
   alternates: { canonical: "/about" },

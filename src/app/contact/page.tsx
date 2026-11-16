@@ -6,7 +6,6 @@ import { RevealHeading } from "@/components/motion/RevealHeading";
 import { surfaceAttrs } from "@/lib/surfaces";
 
 export const metadata: Metadata = {
-  title: "Contact",
   description: "Start an engineering conversation with OMGX AI about AI, industrial automation, immersive technologies or hardware engineering.",
   alternates: { canonical: "/contact" },
 };

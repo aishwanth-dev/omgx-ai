@@ -22,10 +22,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const c = getCapability(slug);
   if (!c) return {};
   return {
-    title: c.title,
     description: `${c.positioning} ${c.intro}`,
     alternates: { canonical: `/capabilities/${c.slug}` },
-    openGraph: { title: `${c.title} — OMGX AI`, description: c.positioning, url: `/capabilities/${c.slug}` },
+    openGraph: { title: "OMGX AI", description: c.positioning, url: `/capabilities/${c.slug}` },
   };
 }
 

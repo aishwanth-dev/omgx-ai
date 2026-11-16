@@ -17,20 +17,17 @@ import "./pages.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
-  title: {
-    default: "OMGX AI — Think beyond. Engineer what's next.",
-    template: "%s — OMGX AI",
-  },
+  title: "OMGX AI",
   description: site.description,
   applicationName: site.name,
   openGraph: {
     type: "website",
     siteName: site.name,
-    title: "OMGX AI — Think beyond. Engineer what's next.",
+    title: "OMGX AI",
     description: site.description,
     url: "/",
   },
-  twitter: { card: "summary_large_image" },
+  twitter: { card: "summary_large_image", title: "OMGX AI" },
   alternates: { canonical: "/" },
 };
 

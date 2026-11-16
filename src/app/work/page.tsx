@@ -7,7 +7,6 @@ import { WorkDirectory } from "@/components/ui/WorkDirectory";
 import { surfaceAttrs } from "@/lib/surfaces";
 
 export const metadata: Metadata = {
-  title: "Work",
   description:
     "Filterable directory of documented OMGX AI work across AI and software, industrial automation, immersive technologies, hardware and embedded systems, video streaming and networking, and underwater monitoring.",
   alternates: { canonical: "/work" },
